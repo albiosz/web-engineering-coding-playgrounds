@@ -36,12 +36,15 @@ async function extractBears(wikitext) {
             var nameMatch = row.match(/\|name=\[\[(.*?)\]\]/);
             var binomialMatch = row.match(/\|binomial=(.*?)\n/);
             var imageMatch = row.match(/\|image=(.*?)\n/);
+            // capture just the first part of the range information (between the `|range=` and the `|`)
+            // it contains also graphic for the range etc.
+            var rangeMatch = row.match(/\|range=([^|]+).*?\n/);
 
             if (nameMatch && binomialMatch && imageMatch) {
                 var fileName = imageMatch[1].trim().replace('File:', '');
 
                 // creating a promise for each bear, since it awaits for HTTP calls to fetch the image url
-                bearPromises.push(createBearData(nameMatch[1], binomialMatch[1], fileName));
+                bearPromises.push(createBearData(nameMatch[1], binomialMatch[1], fileName, rangeMatch[1]));
             }
         });
     });
@@ -63,7 +66,7 @@ function renderBears(bears) {
     });
 }
 
-async function createBearData(name, binomial, fileName) {
+async function createBearData(name, binomial, fileName, range) {
     let imageUrl = 'media/placeholder.svg';
     try {
         imageUrl = await fetchImageUrl(fileName);
@@ -75,7 +78,7 @@ async function createBearData(name, binomial, fileName) {
         name: name,
         binomial: binomial,
         image: imageUrl,
-        range: "TODO extract correct range"
+        range: range
     };
 }
 
