@@ -4,7 +4,7 @@ const commentsSectionToggleManager = () => {
 
     commentWrapper.style.display = 'none';
 
-    showHideBtn.onclick = function() {
+    showHideBtn.onclick = () => {
         var showHideText = showHideBtn.textContent;
         if (showHideText === 'Show comments') { 
             showHideBtn.textContent = 'Hide comments';

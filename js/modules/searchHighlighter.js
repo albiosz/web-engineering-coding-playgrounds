@@ -1,15 +1,16 @@
 // Search highlighter
 const initSearchHighlighter = () => {
-	document.querySelector('.search').addEventListener('submit', function(e) {
+	document.querySelector('.search').addEventListener('submit', (e) => {
 		e.preventDefault();
 
-		document.querySelectorAll('.highlight').forEach(function(el) {
+		document.querySelectorAll('.highlight').forEach(el => {
 			var parent = el.parentNode;
 			parent.replaceChild(document.createTextNode(el.textContent), el);
 			parent.normalize();
 		});
 
-		var searchKey = this.q.value.trim();
+		// replaced `this` with `e.target` because `this` is not the form element when using an arrow function instead of a normal function
+		var searchKey = e.target.q.value.trim();
 		if (!searchKey) return;
 
 		var regex = new RegExp('(' + searchKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
