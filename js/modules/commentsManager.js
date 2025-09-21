@@ -28,10 +28,10 @@ export function commentFormManager() {
         var listItem = document.createElement('li');
         var namePara = document.createElement('p');
         var commentPara = document.createElement('p');
-        var nameValue = nameField.valeu;
+        var nameValue = nameField.value;
         var commentValue = commentField.value;
 
-        namePara.textContnet = nameValue;
+        namePara.textContent = nameValue;
         commentPara.textContent = commentValue;
 
         console.log(nameValue);

@@ -15,7 +15,8 @@ export function initSearchHighlighter() {
 		var regex = new RegExp('(' + searchKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
 
 		function walk(node) {
-			if (node.nodeType === 3) { // Text node
+			// TODO: remove magic number
+			if (node.nodeType === 3) { // Text node 
 				var match = node.nodeValue.match(regex);
 				if (match) {
 					var span = document.createElement('span');
@@ -28,6 +29,7 @@ export function initSearchHighlighter() {
 			}
 		}
 
-		walk(document.body);
+		let articles = document.querySelectorAll('article');
+		articles.forEach(walk);
 	});
 }
