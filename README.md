@@ -71,6 +71,20 @@ Fix application code and answer the questions:
 > console.log('Make use of markdown codesnippets to show and explain good/bad practices!')
 > ```
 
+  - exchanged `var` with `const/let`
+  - added one check if an element exists
+    - [ ] is it a good practice to do it that way?
+
+```js
+const showHideBtn = document.querySelector('.show-hide');
+const commentWrapper = document.querySelector('.comment-wrapper');
+
+
+if (!showHideBtn || !commentWrapper) {
+    console.error('Required elements not found for comments toggle');
+    return;
+}
+```
 
 ## 2. Dependency- and Build Management Playground
 Build the application with ``npm`` and a build and a dependency management tool of your choice (e.g. [Vite](https://vitejs.dev/), [Webpack](https://webpack.js.org/), or others). Additionally, refactor the comments section to be a web component using shadow dom and templates.

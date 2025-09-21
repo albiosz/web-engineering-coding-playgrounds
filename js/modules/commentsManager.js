@@ -4,6 +4,11 @@ const commentsSectionToggleManager = () => {
     const showHideBtn = document.querySelector('.show-hide');
     const commentWrapper = document.querySelector('.comment-wrapper');
 
+    if (!showHideBtn || !commentWrapper) {
+        console.error('Required elements not found for comments toggle');
+        return;
+    }
+
     commentWrapper.style.display = 'none';
 
     showHideBtn.onclick = () => {
