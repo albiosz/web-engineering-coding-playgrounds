@@ -6,7 +6,7 @@ export function commentsSectionToggleManager() {
 
     showHideBtn.onclick = function() {
         var showHideText = showHideBtn.textContent;
-        if (showHideText === 'Show comment') { 
+        if (showHideText === 'Show comments') { 
             showHideBtn.textContent = 'Hide comments';
             commentWrapper.style.display = 'block';
         } else {
