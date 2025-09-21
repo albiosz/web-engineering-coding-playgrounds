@@ -63,14 +63,6 @@ Fix application code and answer the questions:
   * in searchHighlighter had to replace `this` with `e.target`, since `this` is not the `.search` node while using an arrow function 
 * [ ] (4) Eliminate the remaining bad coding practices that you can find. Take notes of why they are a bad practice and how you did fix it below. 
 
-> **What bad coding practices did you find? Why is it a bad practice and how did you fix it?**
-> 
-> _Present your findings here..._
->
-> ```js
-> console.log('Make use of markdown codesnippets to show and explain good/bad practices!')
-> ```
-
   - exchanged `var` with `const/let`
   - added one check if an element exists
     - [ ] is it a good practice to do it that way?
@@ -85,6 +77,22 @@ if (!showHideBtn || !commentWrapper) {
     return;
 }
 ```
+
+  - replace magic numbers with constants
+
+before
+```js
+if (node.nodeType === 3) { // Text node 
+```
+
+after
+```js
+if (node.nodeType === Node.TEXT_NODE) { // Text node 
+```
+
+
+  - further possible improvements
+    - validate input of the user in the comment section
 
 ## 2. Dependency- and Build Management Playground
 Build the application with ``npm`` and a build and a dependency management tool of your choice (e.g. [Vite](https://vitejs.dev/), [Webpack](https://webpack.js.org/), or others). Additionally, refactor the comments section to be a web component using shadow dom and templates.

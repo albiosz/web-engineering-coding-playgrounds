@@ -17,7 +17,6 @@ const initSearchHighlighter = () => {
 		const regex = new RegExp('(' + searchKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
 
 		const walk = (node) => {
-			// TODO: remove magic number
 			if (node.nodeType === Node.TEXT_NODE) { // Text node 
 				const match = node.nodeValue.match(regex);
 				if (match) {
