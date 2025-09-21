@@ -1,6 +1,6 @@
 var baseUrl = "https://en.wikipedia.org/w/api.php";
 
-export function fetchBearData() {
+export async function fetchBearData() {
 
     var title = "List_of_ursids";
 
@@ -13,14 +13,20 @@ export function fetchBearData() {
         origin: "*"
     };
 
-    fetch(baseUrl + "?" + new URLSearchParams(params).toString())
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-            extractBears(data.parse.wikitext['*']);
-        });
+    let response = null;
+    try {
+        response = await fetch(baseUrl + "?" + new URLSearchParams(params).toString());
+    } catch (error) {
+        console.error("Error fetching bear data:", error);
+        return;
+    }
+
+    let data = await response.json();
+    let bears = await extractBears(data.parse.wikitext['*']);
+    renderBears(bears);
 }
 
-function extractBears(wikitext) {
+async function extractBears(wikitext) {
     var speciesTables = wikitext.split('{{Species table/end}}');
     var bearPromises = [];
 
@@ -34,16 +40,14 @@ function extractBears(wikitext) {
             if (nameMatch && binomialMatch && imageMatch) {
                 var fileName = imageMatch[1].trim().replace('File:', '');
 
+                // creating a promise for each bear, since it awaits for HTTP calls to fetch the image url
                 bearPromises.push(createBearData(nameMatch[1], binomialMatch[1], fileName));
-
             }
         });
     });
 
-    Promise.all(bearPromises).then(function(bears) {
-        console.log(bears);
-        renderBears(bears);
-    });
+    // resolve the promises in parallel, so we do not wait for each bear resolved separately
+    return await Promise.all(bearPromises);
 }
 
 
@@ -60,27 +64,22 @@ function renderBears(bears) {
 }
 
 async function createBearData(name, binomial, fileName) {
+    let imageUrl = 'media/placeholder.svg';
     try {
-        const imageUrl = await fetchImageUrl(fileName);
-        return {
-            name: name,
-            binomial: binomial,
-            image: imageUrl,
-            range: "TODO extract correct range"
-        };
+        imageUrl = await fetchImageUrl(fileName);
     } catch (error) {
         console.error(`Error fetching image for ${name}:`, error);
-        // Fallback-Bild oder leere URL
-        return {
-            name: name,
-            binomial: binomial,
-            image: '',
-            range: "TODO extract correct range"
-        };
     }
+
+    return {
+        name: name,
+        binomial: binomial,
+        image: imageUrl,
+        range: "TODO extract correct range"
+    };
 }
 
-function fetchImageUrl(fileName) {
+async function fetchImageUrl(fileName) {
     var imageParams = {
         action: "query",
         titles: "File:" + fileName,
@@ -91,11 +90,10 @@ function fetchImageUrl(fileName) {
     };
 
     var url = baseUrl + "?" + new URLSearchParams(imageParams).toString();
-    return fetch(url).then(function(res) {
-        return res.json();
-    }).then(function(data) {
-        var pages = data.query.pages;
-        var page = Object.values(pages)[0];
-        return page.imageinfo[0].url;
-    });
+    
+    let response = await fetch(url);
+    let data = await response.json();
+    let pages = data.query.pages;
+    let page = Object.values(pages)[0];
+    return page.imageinfo[0].url;
 }
