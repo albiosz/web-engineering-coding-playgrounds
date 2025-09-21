@@ -1,6 +1,8 @@
+export { fetchBearData };
+
 var baseUrl = "https://en.wikipedia.org/w/api.php";
 
-export async function fetchBearData() {
+const fetchBearData = async () => {
 
     var title = "List_of_ursids";
 
@@ -30,13 +32,13 @@ export async function fetchBearData() {
     }
 }
 
-async function extractBears(wikitext) {
+const extractBears = async (wikitext) => {
     var speciesTables = wikitext.split('{{Species table/end}}');
     var bearPromises = [];
 
-    speciesTables.forEach(function(table) {
+    speciesTables.forEach((table) => {
         var rows = table.split('{{Species table/row');
-        rows.forEach(function(row) {
+        rows.forEach((row) => {
             var nameMatch = row.match(/\|name=\[\[(.*?)\]\]/);
             var binomialMatch = row.match(/\|binomial=(.*?)\n/);
             var imageMatch = row.match(/\|image=(.*?)\n/);
@@ -58,9 +60,9 @@ async function extractBears(wikitext) {
 }
 
 
-function renderBears(bears) {
+const renderBears = (bears) => {
     var moreBears = document.querySelector('.more_bears');
-    bears.forEach(function(bear) {
+    bears.forEach((bear) => {
         var html = '<div class="bear">' +
             '<img src="' + bear.image + '" alt="Image of ' + bear.name + '" style="width:200px; height:auto;">' +
             '<p><b>' + bear.name + '</b> (' + bear.binomial + ')</p>' +
@@ -70,7 +72,7 @@ function renderBears(bears) {
     });
 }
 
-async function createBearData(name, binomial, fileName, range) {
+const createBearData = async (name, binomial, fileName, range) => {
     let imageUrl = 'media/placeholder.svg';
     try {
         imageUrl = await fetchImageUrl(fileName);
@@ -86,7 +88,7 @@ async function createBearData(name, binomial, fileName, range) {
     };
 }
 
-async function fetchImageUrl(fileName) {
+const fetchImageUrl = async (fileName) => {
     var imageParams = {
         action: "query",
         titles: "File:" + fileName,

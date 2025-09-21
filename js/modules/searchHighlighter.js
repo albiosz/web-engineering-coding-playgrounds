@@ -1,4 +1,5 @@
-// Search highlighter
+export { initSearchHighlighter };
+
 const initSearchHighlighter = () => {
 	document.querySelector('.search').addEventListener('submit', (e) => {
 		e.preventDefault();
@@ -36,5 +37,3 @@ const initSearchHighlighter = () => {
 		articles.forEach(walk);
 	});
 }
-
-export { initSearchHighlighter };

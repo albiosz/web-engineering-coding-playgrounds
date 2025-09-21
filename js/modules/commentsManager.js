@@ -1,3 +1,5 @@
+export { commentsSectionToggleManager, commentFormManager };
+
 const commentsSectionToggleManager = () => {
     var showHideBtn = document.querySelector('.show-hide');
     var commentWrapper = document.querySelector('.comment-wrapper');
@@ -44,5 +46,3 @@ const commentFormManager = () => {
         commentField.value = '';
     };
 }
-
-export { commentsSectionToggleManager, commentFormManager };
