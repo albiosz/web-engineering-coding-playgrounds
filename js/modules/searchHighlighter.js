@@ -1,5 +1,5 @@
 // Search highlighter
-export function initSearchHighlighter() {
+const initSearchHighlighter = () => {
 	document.querySelector('.search').addEventListener('submit', function(e) {
 		e.preventDefault();
 
@@ -14,9 +14,9 @@ export function initSearchHighlighter() {
 
 		var regex = new RegExp('(' + searchKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
 
-		function walk(node) {
+		const walk = (node) => {
 			// TODO: remove magic number
-			if (node.nodeType === 3) { // Text node 
+			if (node.nodeType === Node.TEXT_NODE) { // Text node 
 				var match = node.nodeValue.match(regex);
 				if (match) {
 					var span = document.createElement('span');
@@ -24,8 +24,10 @@ export function initSearchHighlighter() {
 					node.replaceWith.apply(node, span.childNodes);
 				}
 			} 
-			else if (node.nodeType === 1 && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'FORM') {
-				node.childNodes.forEach(walk);
+			else if (node.nodeType === Node.ELEMENT_NODE && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'FORM') {
+				// Create a static NodeList to avoid issues with DOM changes during iteration
+				const childNodes = Array.from(node.childNodes);
+				childNodes.forEach(walk);
 			}
 		}
 
@@ -33,3 +35,5 @@ export function initSearchHighlighter() {
 		articles.forEach(walk);
 	});
 }
+
+export { initSearchHighlighter };

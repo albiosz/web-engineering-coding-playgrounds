@@ -54,11 +54,11 @@ Fix application code and answer the questions:
   * I created three separate modules in the `/js` directory
 * [x] (4) Fix the semantical issues in the code based on the provided requirements.
   * Now all the requirements are fulfilled
-* [ ] (4) Add proper error handling to the code using ``try/catch`` and provide useful error messages to the users. Additionally, check the image URL availability before rendering the images in HTML. Provide placeholder images if the given URL does not exist.
+* [x] (4) Add proper error handling to the code using ``try/catch`` and provide useful error messages to the users. Additionally, check the image URL availability before rendering the images in HTML. Provide placeholder images if the given URL does not exist.
   * My focus was to put in ``try/catch`` blocks all the http calls, since they depend on the availability of the 3rd party APIs
   * apart from that, I didn't find necessary to put match in `try/catch` blocks, since it mostly depends on the provided code
     * added one extra around the method that renders the "Other bears". 
-* [ ] (4) Adapt the code to use ``async/await`` instead of the ``then()``-callback hell and refactor the functions to use arrow function syntax instead of ``funcśtion()``-syntax.
+* [ ] (4) Adapt the code to use ``async/await`` instead of the ``then()``-callback hell and refactor the functions to use arrow function syntax instead of ``function()``-syntax.
 * [ ] (4) Eliminate the remaining bad coding practices that you can find. Take notes of why they are a bad practice and how you did fix it below. 
 
 > **What bad coding practices did you find? Why is it a bad practice and how did you fix it?**

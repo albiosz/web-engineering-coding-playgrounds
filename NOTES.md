@@ -20,6 +20,33 @@
     - `row.length` - (die Anzahlt der Bären)+1 die sich in aktuellen row befinden
 
 
+```js
+const walk = (node) => {
+  if (node.nodeType === Node.TEXT_NODE) { // Text node 
+    var match = node.nodeValue.match(regex);
+    if (match) {
+      var span = document.createElement('span');
+      span.innerHTML = node.nodeValue.replace(regex, '<mark class="highlight">$1</mark>');
+      
+      // Insert all child nodes before the original node
+      var parent = node.parentNode;
+      var nextSibling = node.nextSibling;
+      parent.removeChild(node);
+      
+      // Insert all span children at the original position
+      while (span.firstChild) {
+        parent.insertBefore(span.firstChild, nextSibling);
+      }
+    }
+  } 
+  else if (node.nodeType === Node.ELEMENT_NODE && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'FORM') {
+    // Create a static NodeList to avoid issues with DOM changes during iteration
+    const childNodes = Array.from(node.childNodes);
+    childNodes.forEach(walk);
+  }
+}
+```
+
 # Wikipedia JSON
 ```json
 ==Ursids==\nThe following classification is based on the taxonomy described by ''[[Mammal Species of the World]]'' (2005), with augmentation by generally accepted proposals made since using [[molecular phylogenetics|molecular phylogenetic analysis]]; this includes the division of the giant panda into two subspecies. There are several additional proposals which are disputed, such as reclassifying the subspecies of the brown bear into a smaller set of [[clade]]s,<ref name="BrownBearSubspecies1"/><ref name="BrownBearSubspecies2"/> which are not included here.

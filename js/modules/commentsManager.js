@@ -1,4 +1,4 @@
-export function commentsSectionToggleManager() {
+const commentsSectionToggleManager = () => {
     var showHideBtn = document.querySelector('.show-hide');
     var commentWrapper = document.querySelector('.comment-wrapper');
 
@@ -16,13 +16,13 @@ export function commentsSectionToggleManager() {
     };
 }
 
-export function commentFormManager() {
+const commentFormManager = () => {
     var form = document.querySelector('.comment-form');
     var nameField = document.querySelector('#name');
     var commentField = document.querySelector('#comment');
     var list = document.querySelector('.comment-container');
 
-    form.onsubmit = function(e) {
+    form.onsubmit = (e) => {
         e.preventDefault();
 
         var listItem = document.createElement('li');
@@ -34,7 +34,7 @@ export function commentFormManager() {
         namePara.textContent = nameValue;
         commentPara.textContent = commentValue;
 
-        console.log(nameValue);
+        console.log(`New comment from ${nameValue}: ${commentValue}`);
 
         list.appendChild(listItem);
         listItem.appendChild(namePara);
@@ -44,3 +44,5 @@ export function commentFormManager() {
         commentField.value = '';
     };
 }
+
+export { commentsSectionToggleManager, commentFormManager };
