@@ -17,13 +17,17 @@ export async function fetchBearData() {
     try {
         response = await fetch(baseUrl + "?" + new URLSearchParams(params).toString());
     } catch (error) {
-        console.error("Error fetching bear data:", error);
+        console.error(`Error fetching bear data from URL: ${baseUrl}, error: ${error}`);
         return;
     }
 
     let data = await response.json();
     let bears = await extractBears(data.parse.wikitext['*']);
-    renderBears(bears);
+    try {
+        renderBears(bears);
+    } catch (error) {
+        console.error(`Error rendering bears: ${error}`);
+    }
 }
 
 async function extractBears(wikitext) {
@@ -71,7 +75,7 @@ async function createBearData(name, binomial, fileName, range) {
     try {
         imageUrl = await fetchImageUrl(fileName);
     } catch (error) {
-        console.error(`Error fetching image for ${name}:`, error);
+        console.error(`Error fetching image for ${name}, error: ${error}`);
     }
 
     return {
