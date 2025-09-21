@@ -22,7 +22,8 @@ export function fetchBearData() {
 
 function extractBears(wikitext) {
     var speciesTables = wikitext.split('{{Species table/end}}');
-    var bears = [];
+    var bearPromises = [];
+
     speciesTables.forEach(function(table) {
         var rows = table.split('{{Species table/row');
         rows.forEach(function(row) {
@@ -33,30 +34,50 @@ function extractBears(wikitext) {
             if (nameMatch && binomialMatch && imageMatch) {
                 var fileName = imageMatch[1].trim().replace('File:', '');
 
-                fetchImageUrl(fileName).then(function(imageUrl) {
-                    var bear = {
-                        name: nameMatch[1],
-                        binomial: binomialMatch[1],
-                        image: imageUrl,
-                        range: "TODO extract correct range"
-                    };
-                    bears.push(bear);
+                bearPromises.push(createBearData(nameMatch[1], binomialMatch[1], fileName));
 
-                    if (bears.length === rows.length) {
-                        var moreBears = document.querySelector('.more_bears');
-                        bears.forEach(function(bear) {
-                            var html = '<div class="bear">' +
-                                '<img src="' + bear.image + '" alt="Image of ' + bear.name + '" style="width:200px; height:auto;">' +
-                                '<p><b>' + bear.name + '</b> (' + bear.binomial + ')</p>' +
-                                '<p>Range: ' + bear.range + '</p>' +
-                                '</div>';
-                            moreBears.innerHTML += html;
-                        });
-                    }
-                });
             }
         });
     });
+
+    Promise.all(bearPromises).then(function(bears) {
+        console.log(bears);
+        renderBears(bears);
+    });
+}
+
+
+function renderBears(bears) {
+    var moreBears = document.querySelector('.more_bears');
+    bears.forEach(function(bear) {
+        var html = '<div class="bear">' +
+            '<img src="' + bear.image + '" alt="Image of ' + bear.name + '" style="width:200px; height:auto;">' +
+            '<p><b>' + bear.name + '</b> (' + bear.binomial + ')</p>' +
+            '<p>Range: ' + bear.range + '</p>' +
+            '</div>';
+        moreBears.innerHTML += html;
+    });
+}
+
+async function createBearData(name, binomial, fileName) {
+    try {
+        const imageUrl = await fetchImageUrl(fileName);
+        return {
+            name: name,
+            binomial: binomial,
+            image: imageUrl,
+            range: "TODO extract correct range"
+        };
+    } catch (error) {
+        console.error(`Error fetching image for ${name}:`, error);
+        // Fallback-Bild oder leere URL
+        return {
+            name: name,
+            binomial: binomial,
+            image: '',
+            range: "TODO extract correct range"
+        };
+    }
 }
 
 function fetchImageUrl(fileName) {
