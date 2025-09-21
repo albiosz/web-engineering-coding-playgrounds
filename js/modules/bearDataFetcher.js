@@ -1,12 +1,12 @@
 export { fetchBearData };
 
-var baseUrl = "https://en.wikipedia.org/w/api.php";
+const baseUrl = "https://en.wikipedia.org/w/api.php";
 
 const fetchBearData = async () => {
 
-    var title = "List_of_ursids";
+    const title = "List_of_ursids";
 
-    var params = {
+    const params = {
         action: "parse",
         page: title,
         prop: "wikitext",
@@ -33,8 +33,8 @@ const fetchBearData = async () => {
 }
 
 const extractBears = async (wikitext) => {
-    var speciesTables = wikitext.split('{{Species table/end}}');
-    var bearPromises = [];
+    const speciesTables = wikitext.split('{{Species table/end}}');
+    const bearPromises = [];
 
     speciesTables.forEach((table) => {
         var rows = table.split('{{Species table/row');
@@ -47,7 +47,7 @@ const extractBears = async (wikitext) => {
             var rangeMatch = row.match(/\|range=([^|]+).*?\n/);
 
             if (nameMatch && binomialMatch && imageMatch) {
-                var fileName = imageMatch[1].trim().replace('File:', '');
+                const fileName = imageMatch[1].trim().replace('File:', '');
 
                 // creating a promise for each bear, since it awaits for HTTP calls to fetch the image url
                 bearPromises.push(createBearData(nameMatch[1], binomialMatch[1], fileName, rangeMatch[1]));
@@ -61,7 +61,7 @@ const extractBears = async (wikitext) => {
 
 
 const renderBears = (bears) => {
-    var moreBears = document.querySelector('.more_bears');
+    const moreBears = document.querySelector('.more_bears');
     bears.forEach((bear) => {
         var html = '<div class="bear">' +
             '<img src="' + bear.image + '" alt="Image of ' + bear.name + '" style="width:200px; height:auto;">' +
@@ -89,7 +89,7 @@ const createBearData = async (name, binomial, fileName, range) => {
 }
 
 const fetchImageUrl = async (fileName) => {
-    var imageParams = {
+    const imageParams = {
         action: "query",
         titles: "File:" + fileName,
         prop: "imageinfo",
@@ -98,7 +98,7 @@ const fetchImageUrl = async (fileName) => {
         origin: "*"
     };
 
-    var url = baseUrl + "?" + new URLSearchParams(imageParams).toString();
+    const url = baseUrl + "?" + new URLSearchParams(imageParams).toString();
     
     let response = await fetch(url);
     let data = await response.json();

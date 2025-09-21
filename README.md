@@ -58,7 +58,7 @@ Fix application code and answer the questions:
   * My focus was to put in ``try/catch`` blocks all the http calls, since they depend on the availability of the 3rd party APIs
   * apart from that, I didn't find necessary to put match in `try/catch` blocks, since it mostly depends on the provided code
     * added one extra around the method that renders the "Other bears". 
-* [ ] (4) Adapt the code to use ``async/await`` instead of the ``then()``-callback hell and refactor the functions to use arrow function syntax instead of ``function()``-syntax.
+* [x] (4) Adapt the code to use ``async/await`` instead of the ``then()``-callback hell and refactor the functions to use arrow function syntax instead of ``function()``-syntax.
   * replaced all the regular functions with arrow functions
   * in searchHighlighter had to replace `this` with `e.target`, since `this` is not the `.search` node while using an arrow function 
 * [ ] (4) Eliminate the remaining bad coding practices that you can find. Take notes of why they are a bad practice and how you did fix it below. 
