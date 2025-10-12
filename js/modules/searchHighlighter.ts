@@ -65,7 +65,7 @@ const initSearchHighlighter = () => {
       }
     };
 
-    let articles = document.querySelectorAll('article');
+    const articles = document.querySelectorAll('article');
     articles.forEach(walk);
   });
 };

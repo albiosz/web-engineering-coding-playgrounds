@@ -74,3 +74,17 @@
 
 # 4. Keep your builds clear and add dependencies to the right build.
 - alle Abhängigkeiten, die ich soweit hinzugefügt werden nur während Entwicklung gebraucht, deswegen befinden sich in `devDependencies` in `package.json`
+
+
+# 5. Define the following tasks within npm scripts
+
+## Gemacht
+- `dev`
+  - standardmäßige Einstellung
+- `build`
+  - minification - standardmäßig wird das Projekt vom vite minifiziert
+  - obfuscation - es ist nicht "out-of-the-box", ich habe es nicht extra eingestellt
+- `lint`
+- `lint:fix`
+- `format`
+- `format:check`

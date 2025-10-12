@@ -26,8 +26,8 @@ const fetchBearData = async () => {
     return;
   }
 
-  let data = await response.json();
-  let bears = await extractBears(data.parse.wikitext['*']);
+  const data = await response.json();
+  const bears = await extractBears(data.parse.wikitext['*']);
   try {
     renderBears(bears);
   } catch (error) {
@@ -37,19 +37,19 @@ const fetchBearData = async () => {
 
 const extractBears = async (wikitext: string) => {
   const speciesTables = wikitext.split('{{Species table/end}}');
-  const bearPromises: Promise<any>[] = [];
+  const bearPromises: Promise<Bear>[] = [];
 
   speciesTables.forEach((table: string) => {
-    let rows: string[] = table.split('{{Species table/row');
+    const rows: string[] = table.split('{{Species table/row');
     rows.forEach((row) => {
-      let nameMatch: RegExpMatchArray | null =
+      const nameMatch: RegExpMatchArray | null =
         row.match(/\|name=\[\[(.*?)\]\]/);
-      let binomialMatch: RegExpMatchArray | null =
+      const binomialMatch: RegExpMatchArray | null =
         row.match(/\|binomial=(.*?)\n/);
-      let imageMatch: RegExpMatchArray | null = row.match(/\|image=(.*?)\n/);
+      const imageMatch: RegExpMatchArray | null = row.match(/\|image=(.*?)\n/);
       // capture just the first part of the range information (between the `|range=` and the `|`)
       // it contains also graphic for the range etc.
-      let rangeMatch: RegExpMatchArray | null =
+      const rangeMatch: RegExpMatchArray | null =
         row.match(/\|range=([^|]+).*?\n/);
 
       if (nameMatch && binomialMatch && imageMatch && rangeMatch) {
@@ -83,7 +83,7 @@ const renderBears = (bears: Bear[]) => {
   }
 
   bears.forEach((bear) => {
-    var html =
+    const html =
       '<div class="bear">' +
       '<img src="' +
       bear.image +
@@ -136,10 +136,10 @@ const fetchImageUrl = async (fileName: string) => {
 
   const url = baseUrl + '?' + new URLSearchParams(imageParams).toString();
 
-  let response = await fetch(url);
-  let data = await response.json();
-  let pages = data.query.pages;
-  let page = Object.values(pages)[0] as { imageinfo: { url: string }[] }; // I assume that the page looks like this
+  const response = await fetch(url);
+  const data = await response.json();
+  const pages = data.query.pages;
+  const page = Object.values(pages)[0] as { imageinfo: { url: string }[] }; // I assume that the page looks like this
   return page.imageinfo[0].url;
 };
 
