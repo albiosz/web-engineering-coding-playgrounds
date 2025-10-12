@@ -47,6 +47,10 @@ const walk = (node) => {
 }
 ```
 
+# FEEDBACK
+- try/catch Blöcke sollen klein sein
+- in README.md sollen wir beschreiben
+
 # Wikipedia JSON
 ```json
 ==Ursids==\nThe following classification is based on the taxonomy described by ''[[Mammal Species of the World]]'' (2005), with augmentation by generally accepted proposals made since using [[molecular phylogenetics|molecular phylogenetic analysis]]; this includes the division of the giant panda into two subspecies. There are several additional proposals which are disputed, such as reclassifying the subspecies of the brown bear into a smaller set of [[clade]]s,<ref name="BrownBearSubspecies1"/><ref name="BrownBearSubspecies2"/> which are not included here.

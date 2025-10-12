@@ -5,7 +5,7 @@ const initSearchHighlighter = () => {
 		e.preventDefault();
 
 		document.querySelectorAll('.highlight').forEach(el => {
-			var parent = el.parentNode;
+			const parent = el.parentNode;
 			parent.replaceChild(document.createTextNode(el.textContent), el);
 			parent.normalize();
 		});

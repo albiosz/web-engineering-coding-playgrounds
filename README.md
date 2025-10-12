@@ -100,8 +100,11 @@ Build the application with ``npm`` and a build and a dependency management tool 
 ### Tasks
 * (1) Integrate `npm` and a build management tool into your project.
 * (5) Configure your project to use Typescript as your primary development language and adapt the code and file extensions respectively.
+  * TS wird schon im ersten Punkt gewählt
+  * Aber muss man den Code umwandeln
 * (3) Use ESLint and Prettier inside your project - rulesets can be found below.
 * (2) Keep your builds clear and add dependencies to the right build.
+  * die Abhängigkeiten, die nicht im Build sich befinden sollen, sollen auch entsprechend importiert werden
 * (2) Define the following tasks within `npm scripts`:
   * `dev`: starts the development server.
   * `build`: runs the typescript compiler and bundles your application - bundling depends on your chosen build tool (e.g. Vite, Webpack) but typically bundles multiple files into one, applies optimizations like minification and obfuscation and outputs final results to a `dist` or `build` directory.
