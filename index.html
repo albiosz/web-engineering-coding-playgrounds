@@ -150,22 +150,10 @@
 			</div>
 		</main>
 
-		<footer>
-			<p>©Copyright 2050 by nobody. All rights reversed.</p>
-		</footer>
-		
-	<script type="module">
-		// Import search highlighter module
-		import { initSearchHighlighter } from './js/modules/searchHighlighter.js';
-		import { commentsSectionToggleManager, commentFormManager } from './js/modules/commentsManager.js';
-		import { fetchBearData } from './js/modules/bearDataFetcher.js';
-
-		initSearchHighlighter();
-
-		commentsSectionToggleManager();
-		commentFormManager();
-		fetchBearData();
-
-		</script>
-	</body>
+	<footer>
+		<p>©Copyright 2050 by nobody. All rights reversed.</p>
+	</footer>
+	
+	<script type="module" src="js/modules/main.ts"></script>
+</body>
 </html>

@@ -1,8 +1,8 @@
 export { commentsSectionToggleManager, commentFormManager };
 
 const commentsSectionToggleManager = () => {
-    const showHideBtn = document.querySelector('.show-hide');
-    const commentWrapper = document.querySelector('.comment-wrapper');
+    const showHideBtn: HTMLElement | null = document.querySelector('.show-hide');
+    const commentWrapper: HTMLElement | null = document.querySelector('.comment-wrapper');
 
     if (!showHideBtn || !commentWrapper) {
         console.error('Required elements not found for comments toggle');
@@ -24,12 +24,17 @@ const commentsSectionToggleManager = () => {
 }
 
 const commentFormManager = () => {
-    const form = document.querySelector('.comment-form');
-    const nameField = document.querySelector('#name');
-    const commentField = document.querySelector('#comment');
-    const list = document.querySelector('.comment-container');
+    const form: HTMLElement | null = document.querySelector('.comment-form');
+    const nameField: HTMLInputElement | null = document.querySelector('#name');
+    const commentField: HTMLInputElement | null = document.querySelector('#comment');
+    const list: HTMLElement | null = document.querySelector('.comment-container');
 
-    form.onsubmit = (e) => {
+    if (!form || !nameField || !commentField || !list) {
+        console.error('Required elements not found for comment form!');
+        return;
+    }
+
+    form.onsubmit = (e: Event) => {
         e.preventDefault();
 
         const listItem = document.createElement('li');

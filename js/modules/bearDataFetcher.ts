@@ -6,11 +6,11 @@ const fetchBearData = async () => {
 
     const title = "List_of_ursids";
 
-    const params = {
+    const params: Record<string, string> = {
         action: "parse",
         page: title,
         prop: "wikitext",
-        section: 3,
+        section: "3",
         format: "json",
         origin: "*"
     };
@@ -32,21 +32,21 @@ const fetchBearData = async () => {
     }
 }
 
-const extractBears = async (wikitext) => {
+const extractBears = async (wikitext: string) => {
     const speciesTables = wikitext.split('{{Species table/end}}');
-    const bearPromises = [];
+    const bearPromises: Promise<any>[] = [];
 
-    speciesTables.forEach((table) => {
-        var rows = table.split('{{Species table/row');
+    speciesTables.forEach((table: string) => {
+        let rows: string[] = table.split('{{Species table/row');
         rows.forEach((row) => {
-            var nameMatch = row.match(/\|name=\[\[(.*?)\]\]/);
-            var binomialMatch = row.match(/\|binomial=(.*?)\n/);
-            var imageMatch = row.match(/\|image=(.*?)\n/);
+            let nameMatch: RegExpMatchArray | null = row.match(/\|name=\[\[(.*?)\]\]/);
+            let binomialMatch: RegExpMatchArray | null = row.match(/\|binomial=(.*?)\n/);
+            let imageMatch: RegExpMatchArray | null = row.match(/\|image=(.*?)\n/);
             // capture just the first part of the range information (between the `|range=` and the `|`)
             // it contains also graphic for the range etc.
-            var rangeMatch = row.match(/\|range=([^|]+).*?\n/);
+            let rangeMatch: RegExpMatchArray | null = row.match(/\|range=([^|]+).*?\n/);
 
-            if (nameMatch && binomialMatch && imageMatch) {
+            if (nameMatch && binomialMatch && imageMatch && rangeMatch) {
                 const fileName = imageMatch[1].trim().replace('File:', '');
 
                 // creating a promise for each bear, since it awaits for HTTP calls to fetch the image url
@@ -60,8 +60,14 @@ const extractBears = async (wikitext) => {
 }
 
 
-const renderBears = (bears) => {
+const renderBears = (bears: Bear[]) => {
     const moreBears = document.querySelector('.more_bears');
+
+    if (!moreBears) {
+        console.error('It was not possible to show the "More bears" section, the .more_bears element not found!');
+        return;
+    }
+
     bears.forEach((bear) => {
         var html = '<div class="bear">' +
             '<img src="' + bear.image + '" alt="Image of ' + bear.name + '" style="width:200px; height:auto;">' +
@@ -72,7 +78,7 @@ const renderBears = (bears) => {
     });
 }
 
-const createBearData = async (name, binomial, fileName, range) => {
+const createBearData = async (name: string, binomial: string, fileName: string, range: string): Promise<Bear> => {
     let imageUrl = 'media/placeholder.svg';
     try {
         imageUrl = await fetchImageUrl(fileName);
@@ -88,8 +94,8 @@ const createBearData = async (name, binomial, fileName, range) => {
     };
 }
 
-const fetchImageUrl = async (fileName) => {
-    const imageParams = {
+const fetchImageUrl = async (fileName: string) => {
+    const imageParams: Record<string, string> = {
         action: "query",
         titles: "File:" + fileName,
         prop: "imageinfo",
@@ -103,6 +109,13 @@ const fetchImageUrl = async (fileName) => {
     let response = await fetch(url);
     let data = await response.json();
     let pages = data.query.pages;
-    let page = Object.values(pages)[0];
+    let page = Object.values(pages)[0] as { imageinfo: { url: string }[] }; // I assume that the page looks like this
     return page.imageinfo[0].url;
+}
+
+type Bear = {
+    name: string;
+    binomial: string;
+    image: string;
+    range: string;
 }
