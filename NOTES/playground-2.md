@@ -52,20 +52,25 @@
 # 3. Use ESLint and Prettier inside your project
 
 ## Fragen
-
 - [ ] Wie verwendet man die `eslint-config-love`?
   - Ich bekomme eine Reihe von Fehler "could not find plugin "n""
     - ich hab einen installiert, aber dann kommt ein anderer
 
 ## Schritte
-
 1. eslint init
-
-- `npm init @eslint/config@latest`
-
+   - `npm init @eslint/config@latest`
 2. Angezeigten Fehler korrigieren
+   - ich hatte Probleme mit der Einstellung vom ESLint
+3. prettier init
+   - `npm install --save-dev --save-exact prettier`
+4. `.prettierrc`
+
 
 ## Quellen
-
 - [Getting Starteimage.pngd with ESLint](https://eslint.org/docs/latest/use/getting-started)
 - [eslint-config-love](https://www.npmjs.com/package/eslint-config-love)
+- [Prettier - Install](prettier.io/docs/install)
+
+
+# 4. Keep your builds clear and add dependencies to the right build.
+- alle Abhängigkeiten, die ich soweit hinzugefügt werden nur während Entwicklung gebraucht, deswegen befinden sich in `devDependencies` in `package.json`
