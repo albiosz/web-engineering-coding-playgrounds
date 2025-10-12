@@ -10,7 +10,8 @@
     "lint:fix": "eslint --fix ./src/*.ts",
     "format": "npx prettier ./src --write",
     "format:check": "npx prettier ./src --check",
-    "tsc": "tsc ./src/*.ts"
+    "tsc": "tsc ./src/*.ts",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
@@ -19,10 +20,18 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "globals": "^16.4.0",
+    "husky": "^9.1.7",
     "jiti": "^2.6.1",
+    "lint-staged": "^16.2.4",
     "prettier": "3.6.2",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.0",
     "vite": "^7.1.9"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }

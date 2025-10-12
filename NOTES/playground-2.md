@@ -88,3 +88,20 @@
 - `lint:fix`
 - `format`
 - `format:check`
+
+
+# 6. Configure a pre-commit hook that lints and formats your code 
+
+## Fragen
+- [ ] die originelle Quelle war nicht verfügbar
+
+## Quellen
+- [Ship Consistent, High-Quality Code: A Complete Guide to ESLint, Prettier, Husky, Lint-Staged](https://medium.com/@clintjeez/ship-consistent-high-quality-code-a-complete-guide-to-eslint-prettier-husky-lint-staged-8d1584c518a1)
+
+## Gemacht
+- `npm install husky --save-dev`
+- `npx husky install`
+- `npm install lint-staged --save-dev`
+- .lintstagerc hinzugefügt
+- pre-commit erstellt
+
