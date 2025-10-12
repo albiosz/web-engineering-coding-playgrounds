@@ -14,7 +14,7 @@ const fetchBearData = async () => {
     origin: '*',
   };
 
-  let response = null;
+  let response: Response | null = null;
   try {
     response = await fetch(
       baseUrl + '?' + new URLSearchParams(params).toString()

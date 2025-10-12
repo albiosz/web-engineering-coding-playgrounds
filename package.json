@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint ./js/modules/*.ts",
-    "lint:fix": "eslint --fix ./js/modules/*.ts",
-    "format": "npx prettier ./js/modules --write",
-    "format:check": "npx prettier ./js/modules --check",
-    "tsc": "tsc ./js/modules/*.ts"
+    "lint": "eslint ./src/*.ts",
+    "lint:fix": "eslint --fix ./src/*.ts",
+    "format": "npx prettier ./src --write",
+    "format:check": "npx prettier ./src --check",
+    "tsc": "tsc ./src/*.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
