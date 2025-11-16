@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc ./src/*.ts && vite build",
     "lint": "eslint ./src/*.ts",
     "lint:fix": "eslint --fix ./src/*.ts",
     "format": "npx prettier ./src --write",

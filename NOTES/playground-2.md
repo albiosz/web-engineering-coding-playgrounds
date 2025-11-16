@@ -5,7 +5,8 @@
 - [Vite - Getting Started](vite.dev/guide/)
 
 ## Schritte
-
+0. npm Projekt initialisieren
+  - `npm init -y`
 1. Manual installation
    - `npm install -D vite`
 
@@ -29,6 +30,7 @@
 ## Fragen
 
 - [ ] Wie soll ich TS verwenden mit requests von Quellen die keine TS types zur Verfügung stellen?
+  - man kann DTOs erstellen mit Annahmen wie die Daten aussehen sollen 
 
 ## Schritte
 
@@ -55,6 +57,8 @@
 - [ ] Wie verwendet man die `eslint-config-love`?
   - Ich bekomme eine Reihe von Fehler "could not find plugin "n""
     - ich hab einen installiert, aber dann kommt ein anderer
+  - es ist wahrscheinlich ein Problem mit der Versionen
+    - `es-lint` version 9 ist nicht mit `eslint-config-love` kompatibel
 
 ## Schritte
 1. eslint init
@@ -75,6 +79,7 @@
 # 4. Keep your builds clear and add dependencies to the right build.
 - alle Abhängigkeiten, die ich soweit hinzugefügt werden nur während Entwicklung gebraucht, deswegen befinden sich in `devDependencies` in `package.json`
 
+- das ganze tooling gehört zu `devDependencies`
 
 # 5. Define the following tasks within npm scripts
 
@@ -89,6 +94,9 @@
 - `format`
 - `format:check`
 
+## Wofür sind Befehle?
+- Wissen-Austausch zwischen Entwickler
+- man kann die Befehle in CI/CD Pipeline einsetzen
 
 # 6. Configure a pre-commit hook that lints and formats your code 
 
@@ -105,3 +113,16 @@
 - .lintstagerc hinzugefügt
 - pre-commit erstellt
 
+
+## Neuer Code
+```json
+"lint-staged": {
+  "*.{js,jsx,ts,tsx}": [
+    "eslint --fix",
+    "prettier --write"
+  ]
+}
+```
+
+
+## 7 
