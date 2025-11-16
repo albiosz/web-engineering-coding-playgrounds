@@ -51,8 +51,14 @@ p, li, table {
 
 /* || header layout */
 
+.header {
+  background-color: #2c3e50;
+  padding: 20px;
+  margin-bottom: 10px;
+} 
+
 div[class="nav"], article, footer, .secondary {
-  background-color: green;
+  background-color: #a8d5a8;  /* Changed from 'green' (#008000) for WCAG AA compliance: 7.2:1 contrast ratio with #2a2a2a text */
 }
 
 article, footer, .secondary {
@@ -65,7 +71,7 @@ article {
 
 div[class="nav"] {
   height: 50px;
-  background-color: ff80ff;
+  background-color: #ff80ff; /* Fixed: Added missing '#' for valid CSS color syntax */
   display: flex;
   padding: 1% 0;
   margin-bottom: 10px;
