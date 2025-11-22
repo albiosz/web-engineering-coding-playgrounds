@@ -9,7 +9,7 @@ Report on what happens when you try to navigate the page using a screen reader. 
 """
 Steuerung erfolgt mit `VO = Control + Option`.
 
-`VO + Shift + Pfeil rechts/links`
+`VO + Shift + Pfeil nach oben/unten`
 → Eine Elementebene tiefer / breiter gehen
 
 `VO + Pfeil rechts/links`
