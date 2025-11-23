@@ -230,12 +230,6 @@ audio {
   padding: 10px;
 }
 
-.show-hide {
-  cursor: pointer;
-  font-family: inherit;
-  padding: 0;
-}
-
 .comments h2 {
   font-size: 2rem;
 }
@@ -265,6 +259,9 @@ audio {
 }
 
 .show-hide {
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
   text-align: center;
   width: 150px;
 }
