@@ -5,6 +5,16 @@ html, body {
   padding: 0;
 }
 
+/* Screen reader only (visually hidden but accessible) */
+.sr-only {
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+}
+
 html {
   font-size: 10px;
   background-color: #dde;
@@ -240,6 +250,7 @@ audio {
 
 .comment-form .flex-pair {
   display: flex;
+  gap: 1rem;
   padding: 0 3rem 1rem;
 }
 
@@ -250,7 +261,6 @@ audio {
 }
 
 .comment-form input {
-  margin-left: 1rem;
   flex: 6;
 }
 
