@@ -23,6 +23,7 @@ where L1 is the relative luminance of the lighter color and L2 is the relative l
 ## Used Tools
 - Color Contrast Analyzer: https://developer.paciellogroup.com/color-contrast-checker/
   - the color picker is not very accurate :/
+- Light Hause oder Wave können es automatisch überprüfen, ohne selber mit dem color picker überprüfen zu müssen
 
 
 ## Test Results - BEFORE Fixes
