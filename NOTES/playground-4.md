@@ -13,4 +13,29 @@
 # 3. Migrate search highlighter
 - the code from `searchHighlighter.ts` was migrated to `App.tsx`
 
- 
+
+# 4. Divide the main component into smaller components
+
+Result:
+```tsx
+<div>
+    <Header />
+    <Nav />
+
+    <main>
+    <article>
+        <Intro />
+        <TypesOfBear />
+        <HabitatsAndEatingHabits />
+        <MatingRituals />
+        <AboutAuthor />
+        <MoreBears />
+    </article>
+
+    <aside className="secondary">
+        <RelatedPages />
+    </aside>
+    </main>
+
+    <Footer />
+</div>
