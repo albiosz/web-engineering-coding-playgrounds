@@ -9,4 +9,8 @@
 1. I copied the HTML into the return expression.
 2. Adjusted the HTML according to JSX format.
 
+
+# 3. Migrate search highlighter
+- the code from `searchHighlighter.ts` was migrated to `App.tsx`
+
  

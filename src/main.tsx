@@ -1,10 +1,8 @@
 import { createRoot } from 'react-dom/client';
-import { initSearchHighlighter } from './searchHighlighter.ts';
 import { fetchBearData } from './bearDataFetcher.ts';
 
 import { App } from './App.tsx';
 
-initSearchHighlighter();
 fetchBearData();
 
 // Mount React component
