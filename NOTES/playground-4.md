@@ -39,3 +39,10 @@ Result:
 
     <Footer />
 </div>
+```
+
+# 5. Create a Bear component for "More Bears" section
+
+## Sources
+- [Fetching Data In React](https://www.theodinproject.com/lessons/node-path-react-new-fetching-data-in-react#introduction)
+- [Fetching data with effects](https://react.dev/reference/react/useEffect#fetching-data-with-effects)

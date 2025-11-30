@@ -1,8 +1,15 @@
 export { fetchBearData };
 
+export type BearData = {
+  name: string;
+  binomial: string;
+  image: string;
+  range: string;
+};
+
 const baseUrl = 'https://en.wikipedia.org/w/api.php';
 
-const fetchBearData = async () => {
+const fetchBearData = async (): Promise<BearData[]> => {
   const title = 'List_of_ursids';
 
   const params: Record<string, string> = {
@@ -23,21 +30,16 @@ const fetchBearData = async () => {
     console.error(
       `Error fetching bear data from URL: ${baseUrl}, error: ${error}`
     );
-    return;
+    return [];
   }
 
   const data = await response.json();
-  const bears = await extractBears(data.parse.wikitext['*']);
-  try {
-    renderBears(bears);
-  } catch (error) {
-    console.error(`Error rendering bears: ${error}`);
-  }
+  return await extractBears(data.parse.wikitext['*']);
 };
 
 const extractBears = async (wikitext: string) => {
   const speciesTables = wikitext.split('{{Species table/end}}');
-  const bearPromises: Promise<Bear>[] = [];
+  const bearPromises: Promise<BearData>[] = [];
 
   speciesTables.forEach((table: string) => {
     const rows: string[] = table.split('{{Species table/row');
@@ -72,43 +74,12 @@ const extractBears = async (wikitext: string) => {
   return await Promise.all(bearPromises);
 };
 
-const renderBears = (bears: Bear[]) => {
-  const moreBears = document.querySelector('.more_bears');
-
-  if (!moreBears) {
-    console.error(
-      'It was not possible to show the "More bears" section, the .more_bears element not found!'
-    );
-    return;
-  }
-
-  bears.forEach((bear) => {
-    const html =
-      '<div class="bear">' +
-      '<img src="' +
-      bear.image +
-      '" alt="Image of ' +
-      bear.name +
-      '" style="width:200px; height:auto;">' +
-      '<p><b>' +
-      bear.name +
-      '</b> (' +
-      bear.binomial +
-      ')</p>' +
-      '<p>Range: ' +
-      bear.range +
-      '</p>' +
-      '</div>';
-    moreBears.innerHTML += html;
-  });
-};
-
 const createBearData = async (
   name: string,
   binomial: string,
   fileName: string,
   range: string
-): Promise<Bear> => {
+): Promise<BearData> => {
   let imageUrl = 'media/placeholder.svg';
   try {
     imageUrl = await fetchImageUrl(fileName);
@@ -141,11 +112,4 @@ const fetchImageUrl = async (fileName: string) => {
   const pages = data.query.pages;
   const page = Object.values(pages)[0] as { imageinfo: { url: string }[] }; // I assume that the page looks like this
   return page.imageinfo[0].url;
-};
-
-type Bear = {
-  name: string;
-  binomial: string;
-  image: string;
-  range: string;
 };
