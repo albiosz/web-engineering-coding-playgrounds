@@ -3,6 +3,14 @@
 # 1. Use React for the comment web component
 - I have decided to firstly just migrate the `<comment-section />` custom web component to React and embed it in the DOM
 
+
+## Tools
+- [html to jsx](https://transform.tools/html-to-jsx)
+  
+## Sources
+- [Add React to an Existing Project](https://react.dev/learn/add-react-to-an-existing-project)
+
+
 # 2. Migrate the whole body into React
 - Next Step was to move all the html from index.html to App.tsx
 
@@ -46,3 +54,14 @@ Result:
 ## Sources
 - [Fetching Data In React](https://www.theodinproject.com/lessons/node-path-react-new-fetching-data-in-react#introduction)
 - [Fetching data with effects](https://react.dev/reference/react/useEffect#fetching-data-with-effects)
+
+
+# 6. CSS organization
+- [x] remove inline styles from `index.html`
+- [ ] move from the global `style.css` styles that are meant for single components
+- [ ] `style.css` should contain only global styles
+- [ ] `comment-section.css` should not leak the styles on `index.html`
+  - [CSS modules](https://sachinamarasinghe.medium.com/mastering-the-art-of-scoped-css-in-react-a-stylish-guide-to-cleaner-safer-and-more-maintainable-ba3263df098d)
+    - https://vite.dev/guide/features#css-modules
+  - [styled components](https://dev.to/eransakal/how-to-isolate-component-styles-in-react-using-css-modules-mkm)
+  - [shadow dom](https://javascript.plainenglish.io/how-i-solved-css-conflicts-in-react-using-shadow-dom-and-portals-be3ee3f18aba)

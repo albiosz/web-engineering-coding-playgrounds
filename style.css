@@ -1,5 +1,14 @@
 /* || General setup */
 
+body {
+  font-family: Arial, sans-serif;
+}
+
+.highlight {
+  background-color: yellow;
+  color: black;
+}
+
 html, body {
   margin: 0;
   padding: 0;
