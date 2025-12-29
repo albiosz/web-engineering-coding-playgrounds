@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["./src/*", "src/components/comment-section/comment-section.ts", "src/components/more-bears/bearDataFetcher.ts"]
+  "include": ["./src/*"]
 }

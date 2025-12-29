@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc ./src/*.ts && vite build",
-    "lint": "eslint ./src/*.ts",
-    "lint:fix": "eslint --fix ./src/*.ts",
+    "build": "tsc && vite build",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint --fix ./src",
     "format": "npx prettier ./src --write",
     "format:check": "npx prettier ./src --check",
-    "tsc": "tsc ./src/*.ts",
+    "tsc": "tsc",
     "prepare": "husky"
   },
   "devDependencies": {
