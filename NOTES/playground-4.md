@@ -9,6 +9,7 @@
   
 ## Sources
 - [Add React to an Existing Project](https://react.dev/learn/add-react-to-an-existing-project)
+- [Quick Start](https://react.dev/learn#adding-styles)
 
 
 # 2. Migrate the whole body into React
@@ -64,4 +65,10 @@ Result:
   - [CSS modules](https://sachinamarasinghe.medium.com/mastering-the-art-of-scoped-css-in-react-a-stylish-guide-to-cleaner-safer-and-more-maintainable-ba3263df098d)
     - https://vite.dev/guide/features#css-modules
   - [styled components](https://dev.to/eransakal/how-to-isolate-component-styles-in-react-using-css-modules-mkm)
+    - [styled-components - official website](https://styled-components.com/docs/basics)
   - [shadow dom](https://javascript.plainenglish.io/how-i-solved-css-conflicts-in-react-using-shadow-dom-and-portals-be3ee3f18aba)
+  - [How I Solved CSS Conflicts in React Using Shadow DOM and Portals](https://javascript.plainenglish.io/how-i-solved-css-conflicts-in-react-using-shadow-dom-and-portals-be3ee3f18aba)
+
+
+# Sources
+- 
