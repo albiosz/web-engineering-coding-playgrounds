@@ -10,3 +10,8 @@
   - ![chosen spring config](imgs/image.png)
 4. The Spring application is ready to run!
 
+
+# 2. Create an API
+"Create an API your frontend will be connected to. Your backend should request the bear data from presented Wikipedia API and serve it to your frontend."
+
+- implemented an API with fetching logic similar to what was already implemented in frontend
