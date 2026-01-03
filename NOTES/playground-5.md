@@ -22,3 +22,9 @@
 ## References
 - [Enabling Cross Origin Requests for a RESTful Web Service](https://spring.io/guides/gs/rest-service-cors#_enabling_cors)
 
+
+# 4. Replace the frontend Wikipedia API calls with calls to your backend
+"Replace the frontend Wikipedia API calls with calls to your backend - the functionality of your frontend should work as before!"
+
+- removed the fetching logic from frontend and replace it with a simple call to the backend
+- 
