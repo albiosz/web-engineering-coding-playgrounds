@@ -19,14 +19,14 @@ public class BearsApplication {
 	public RestTemplate restTemplate() {
 		RestTemplate restTemplate = new RestTemplate();
 		
-		 ClientHttpRequestInterceptor interceptor = (request, body, execution) -> {
+		ClientHttpRequestInterceptor interceptor = (request, body, execution) -> {
 //		 	 wikipedia api requires setting the header `User-Agent`, otherwise 403 status code is returned
 //			 "Please set a user-agent and respect our robot policy https://w.wiki/4wJS.
 		 	request.getHeaders().add("User-Agent", "BearsApp/1.0 (Educational Project)");
 		 	return execution.execute(request, body);
-		 };
+		};
 
-		 restTemplate.setInterceptors(List.of(interceptor));
+		restTemplate.setInterceptors(List.of(interceptor));
 		return restTemplate;
 	}
 
