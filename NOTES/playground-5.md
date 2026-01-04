@@ -27,4 +27,32 @@
 "Replace the frontend Wikipedia API calls with calls to your backend - the functionality of your frontend should work as before!"
 
 - removed the fetching logic from frontend and replace it with a simple call to the backend
-- 
+
+
+# Create multi-stage Dockerfiles for your applications
+"Create multi-stage Dockerfiles for your applications (depending on your frameworks):
+- The frontend Dockerfile should: 1. run the app in a development environment 2. build the app 3. serve build artifacts over Nginx
+- The backend Dockerfile should: 1. run the app in a development environment 2. build the app if there is a build step in your framework (optional) 3. serve the app
+"
+
+
+
+
+## How to run?
+### Frontend
+- development
+  - build 
+    - `docker build --target development -t bears-frontend:dev .`
+  - run
+    - `docker run -p 5173:5173 -v $(pwd):/app -v /app/node_modules bears-frontend:dev`
+- production
+  - build
+    - `docker build --target production -t bears-frontend:prod .`
+  - run
+    - `docker run -p 5173:80 bears-frontend:prod`
+
+#### Reference
+- [How to Deploy a Vite React App using Nginx server?](https://dev-mus.medium.com/how-to-deploy-a-vite-react-app-using-nginx-server-d7190a29d8cd)
+- [nginx - Beginner’s Guide](https://nginx.org/en/docs/beginners_guide.html)
+- [docker hub - node image](https://hub.docker.com/_/node)
+- [gzip compression](https://developer.mozilla.org/en-US/docs/Glossary/gzip_compression)
