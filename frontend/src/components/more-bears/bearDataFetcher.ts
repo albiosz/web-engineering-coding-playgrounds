@@ -7,15 +7,15 @@ export type BearData = {
   range: string;
 };
 
-const baseUrl = 'http://localhost:8080/api';
+const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 const fetchBearData = async (): Promise<BearData[]> => {
   let response: Response | null = null;
   try {
-    response = await fetch(`${baseUrl}/bears`);
+    response = await fetch(`${baseUrl}/api/bears`);
   } catch (error) {
     console.error(
-      `Error fetching bear data from backend: ${baseUrl}/bears, error: ${error}`
+      `Error fetching bear data from backend: ${baseUrl}/api/bears, error: ${error}`
     );
     
     return [];

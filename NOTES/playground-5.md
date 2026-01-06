@@ -73,3 +73,24 @@
 - [Spring Boot with Docker](https://spring.io/guides/gs/spring-boot-docker)
 - [Eclipse Temurin Docker Images](https://hub.docker.com/_/eclipse-temurin)
 - [Gradle Docker Images](https://hub.docker.com/_/gradle)
+
+
+# docker-compose
+"Create two docker-compose files to orchestrate you applications in development and production mode:
+- Define ports and dependencies
+- Define corresponding stage (development, production)
+- Use environment variables if possible
+"
+
+- development
+  - `docker-compose -f docker-compose.yml up --build`
+- production Mode
+`docker-compose -f docker-compose.prod.yml up --build`
+
+
+Introduced env variables:
+- `VITE_API_URL`: Backend API URL (default: http://localhost:8080)
+- `CORS_ALLOWED_ORIGINS`: Allowed CORS origins for backend (default: http://localhost:5173)
+
+## Reference
+- [Compose file reference](https://docs.docker.com/reference/compose-file/version-and-name/)
