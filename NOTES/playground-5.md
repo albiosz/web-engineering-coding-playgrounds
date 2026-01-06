@@ -36,9 +36,8 @@
 "
 
 
-
-
 ## How to run?
+
 ### Frontend
 - development
   - build 
@@ -56,3 +55,21 @@
 - [nginx - Beginner’s Guide](https://nginx.org/en/docs/beginners_guide.html)
 - [docker hub - node image](https://hub.docker.com/_/node)
 - [gzip compression](https://developer.mozilla.org/en-US/docs/Glossary/gzip_compression)
+
+
+### Backend
+- development
+  - build
+    - `docker build --target development -t bears-backend:dev .`
+  - run
+    - `docker run -p 8080:8080 -v $(pwd)/src:/app/src bears-backend:dev`
+- production
+  - build
+    - `docker build --target production -t bears-backend:prod .`
+  - run
+    - `docker run -p 8080:8080 bears-backend:prod`
+
+#### Reference
+- [Spring Boot with Docker](https://spring.io/guides/gs/spring-boot-docker)
+- [Eclipse Temurin Docker Images](https://hub.docker.com/_/eclipse-temurin)
+- [Gradle Docker Images](https://hub.docker.com/_/gradle)
