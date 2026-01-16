@@ -1,6 +1,7 @@
 name: Issue Comment Webhook
 
 on:
+  workflow_dispatch:
   issue_comment:
     types: [edited]
 
