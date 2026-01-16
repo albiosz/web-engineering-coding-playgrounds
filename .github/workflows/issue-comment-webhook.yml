@@ -1,0 +1,42 @@
+name: Issue Comment Webhook
+
+on:
+  issue_comment:
+    types: [edited]
+
+jobs:
+  send-webhook:
+    # Only run for issue comments, not pull request comments
+    if: github.event.issue.pull_request == null
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Send webhook notification
+        run: |
+          WEBHOOK_URL="https://ai-engineering-workflow.app.n8n.cloud/webhook-test/ff376cf5-fbeb-4012-8d75-6920f8c36829"
+          
+          # Prepare the JSON payload with comment information
+          PAYLOAD=$(cat <<EOF
+          {
+            "action": "${{ github.event.action }}",
+            "issue_number": ${{ github.event.issue.number }},
+            "comment_body": $(echo '${{ github.event.comment.body }}' | jq -R -s .),
+            "author": "${{ github.event.comment.user.login }}",
+            "repository": "${{ github.repository }}",
+            "comment_url": "${{ github.event.comment.html_url }}",
+            "issue_title": $(echo '${{ github.event.issue.title }}' | jq -R -s .),
+            "timestamp": "${{ github.event.comment.created_at }}"
+          }
+          EOF
+          )
+          
+          # Send the webhook with basic authentication
+          curl -X POST "$WEBHOOK_URL" \
+            -u "${{ vars.WEBHOOK_USERNAME }}:${{ secrets.WEBHOOK_PASSWORD }}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            --fail \
+            --silent \
+            --show-error
+          
+          echo "Webhook sent successfully for comment action: ${{ github.event.action }}"
