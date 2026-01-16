@@ -13,23 +13,32 @@ jobs:
     
     steps:
       - name: Send webhook notification
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
-          WEBHOOK_URL="https://ai-engineering-workflow.app.n8n.cloud/webhook-test/ff376cf5-fbeb-4012-8d75-6920f8c36829"
+          WEBHOOK_URL="${{ vars.WEBOOK_EDIT_COMMENT }}"
           
-          # Prepare the JSON payload with comment information
-          PAYLOAD=$(cat <<EOF
-          {
-            "action": "${{ github.event.action }}",
-            "issue_number": ${{ github.event.issue.number }},
-            "comment_body": $(echo '${{ github.event.comment.body }}' | jq -R -s .),
-            "author": "${{ github.event.comment.user.login }}",
-            "repository": "${{ github.repository }}",
-            "comment_url": "${{ github.event.comment.html_url }}",
-            "issue_title": $(echo '${{ github.event.issue.title }}' | jq -R -s .),
-            "timestamp": "${{ github.event.comment.created_at }}"
-          }
-          EOF
-          )
+          # Build JSON payload using jq to properly escape all values
+          PAYLOAD=$(jq -n \
+            --arg action "${{ github.event.action }}" \
+            --argjson issue_number "${{ github.event.issue.number }}" \
+            --arg comment_body "$COMMENT_BODY" \
+            --arg author "${{ github.event.comment.user.login }}" \
+            --arg repository "${{ github.repository }}" \
+            --arg comment_url "${{ github.event.comment.html_url }}" \
+            --arg issue_title "$ISSUE_TITLE" \
+            --arg timestamp "${{ github.event.comment.created_at }}" \
+            '{
+              action: $action,
+              issue_number: $issue_number,
+              comment_body: $comment_body,
+              author: $author,
+              repository: $repository,
+              comment_url: $comment_url,
+              issue_title: $issue_title,
+              timestamp: $timestamp
+            }')
           
           # Send the webhook with basic authentication
           curl -X POST "$WEBHOOK_URL" \
