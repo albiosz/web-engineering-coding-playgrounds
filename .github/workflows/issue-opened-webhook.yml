@@ -6,7 +6,7 @@ on:
     types: [opened]
 
 jobs:
-  send-webhook:
+  create-structured-ticket:
     runs-on: ubuntu-latest
     
     steps:

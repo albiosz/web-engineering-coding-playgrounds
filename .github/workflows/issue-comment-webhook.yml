@@ -6,7 +6,7 @@ on:
     types: [edited]
 
 jobs:
-  send-webhook:
+  improve-ticket:
     # Only run for issue comments, not pull request comments
     if: github.event.issue.pull_request == null && contains(github.event.comment.body, '/reevaluate-ticket')
     runs-on: ubuntu-latest
