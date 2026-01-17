@@ -5,5 +5,14 @@ export default defineConfig({
   build: {
     minify: 'esbuild', // default setting
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+    },
+  },
 })
 
