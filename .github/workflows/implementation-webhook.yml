@@ -17,7 +17,7 @@ jobs:
           COMMENT_BODY: ${{ github.event.comment.body }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
-          WEBHOOK_URL="${{ vars.WEBOOK_EDIT_COMMENT_URL }}"
+          WEBHOOK_URL="${{ vars.WEBHOOK_IMPLEMENTATION_URL }}"
           
           # Build JSON payload using jq to properly escape all values
           PAYLOAD=$(jq -n \
