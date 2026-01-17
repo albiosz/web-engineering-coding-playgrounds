@@ -1,0 +1,60 @@
+name: Implementation Webhook
+
+on:
+  workflow_dispatch:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  implementation:
+    # Only run for issue comments, not pull request comments
+    if: github.event.issue.pull_request == null && contains(github.event.comment.body, '/implementation')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Send webhook notification
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          WEBHOOK_URL="${{ vars.WEBOOK_EDIT_COMMENT_URL }}"
+          
+          # Build JSON payload using jq to properly escape all values
+          PAYLOAD=$(jq -n \
+            --arg action "${{ github.event.action }}" \
+            --argjson issue_number "${{ github.event.issue.number }}" \
+            --arg comment_body "$COMMENT_BODY" \
+            --arg author "${{ github.event.comment.user.login }}" \
+            --arg repository "${{ github.repository }}" \
+            --arg comment_url "${{ github.event.comment.html_url }}" \
+            --arg issue_title "$ISSUE_TITLE" \
+            --arg timestamp "${{ github.event.comment.created_at }}" \
+            '{
+              action: $action,
+              issue_number: $issue_number,
+              comment_body: $comment_body,
+              author: $author,
+              repository: $repository,
+              comment_url: $comment_url,
+              issue_title: $issue_title,
+              timestamp: $timestamp
+            }')
+          
+          # Send the webhook with basic authentication
+          curl -X POST "$WEBHOOK_URL" \
+            -u "${{ vars.WEBHOOK_USERNAME }}:${{ secrets.WEBHOOK_PASSWORD }}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            --fail \
+            --silent \
+            --show-error
+          
+          echo "Webhook sent successfully for comment action: ${{ github.event.action }}"
+      
+      - name: React with thumbs up
+        if: success()
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ github.event.comment.id }}
+          reactions: "+1"
