@@ -1,23 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useId, useCallback } from 'react';
 import './comment-section.css';
 
-interface Comment {
+export interface Comment {
+  id: string;
   name: string;
   text: string;
   timestamp: Date;
 }
 
-// Helper function to get initials from a name
-const getInitials = (name: string): string => {
-  return name
-    .split(' ')
-    .map((word) => word.charAt(0).toUpperCase())
-    .slice(0, 2)
-    .join('');
+interface CommentSectionProps {
+  initialComments?: Comment[];
+}
+
+/**
+ * Generates initials from a name string
+ * @param name - Full name to extract initials from
+ * @returns Up to 2 character initials
+ */
+export const getInitials = (name: string): string => {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 0 || parts[0] === '') return '?';
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 };
 
-// Helper function to format relative time
-const formatRelativeTime = (date: Date): string => {
+/**
+ * Gets a consistent avatar variant based on the name
+ * @param name - Name to generate variant for
+ * @returns Variant class name (0-4)
+ */
+export const getAvatarVariant = (name: string): string => {
+  const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const variant = hash % 5;
+  if (variant === 0) return '';
+  return `comment-avatar--variant-${variant}`;
+};
+
+/**
+ * Validates comment form input
+ * @param name - User name
+ * @param text - Comment text
+ * @returns Whether the input is valid
+ */
+export const isValidComment = (name: string, text: string): boolean => {
+  return name.trim().length > 0 && text.trim().length > 0;
+};
+
+/**
+ * Formats a date as relative time (e.g., "2 hours ago")
+ * @param date - Date to format
+ * @returns Formatted relative time string
+ */
+export const formatRelativeTime = (date: Date): string => {
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
@@ -30,107 +64,155 @@ const formatRelativeTime = (date: Date): string => {
   return date.toLocaleDateString();
 };
 
-export const CommentSection: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([
+export const CommentSection: React.FC<CommentSectionProps> = ({
+  initialComments,
+}) => {
+  const formId = useId();
+
+  const defaultComments: Comment[] = [
     {
+      id: 'comment-1',
       name: 'Bob Fossil',
-      text: 'Oh I am so glad you taught me all about the big brown angry guys...',
+      text: 'Oh I am so glad you taught me all about the big brown angry guys. They are so fascinating and I never knew they could be so diverse!',
       timestamp: new Date(Date.now() - 86400000), // 1 day ago
     },
-  ]);
+  ];
+
+  const [isVisible, setIsVisible] = useState(false);
+  const [comments, setComments] = useState<Comment[]>(
+    initialComments ?? defaultComments
+  );
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
 
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
-  };
+  const toggleVisibility = useCallback(() => {
+    setIsVisible((prev) => !prev);
+  }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
 
-    if (name.trim() && comment.trim()) {
-      const newComment: Comment = {
-        name: name,
-        text: comment,
-        timestamp: new Date(),
-      };
+      if (isValidComment(name, comment)) {
+        const newComment: Comment = {
+          id: `comment-${Date.now()}`,
+          name: name.trim(),
+          text: comment.trim(),
+          timestamp: new Date(),
+        };
 
-      console.log(`New comment from ${name}: ${comment}`);
+        setComments((prevComments) => [...prevComments, newComment]);
+        setName('');
+        setComment('');
+      }
+    },
+    [name, comment]
+  );
 
-      setComments([...comments, newComment]);
-      setName('');
-      setComment('');
-    }
-  };
+  const handleNameChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setName(e.target.value);
+    },
+    []
+  );
 
-  const commentCount = comments.length;
+  const handleCommentChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setComment(e.target.value);
+    },
+    []
+  );
+
+  const isFormValid = isValidComment(name, comment);
 
   return (
-    <section className="comments" aria-label="Comment section">
+    <section className="comments" aria-labelledby={`${formId}-heading`}>
+      <h2 id={`${formId}-heading`} className="sr-only">
+        Comment Section
+      </h2>
+
       <button
         className="show-hide"
         onClick={toggleVisibility}
         aria-expanded={isVisible}
-        aria-controls="comment-content"
+        aria-controls={`${formId}-content`}
       >
-        <span className="show-hide-icon">{isVisible ? '−' : '+'}</span>
-        <span className="show-hide-text">
-          {isVisible ? 'Hide comments' : `Show comments (${commentCount})`}
-        </span>
+        <span aria-hidden="true">{isVisible ? '▼' : '▶'}</span>
+        {isVisible ? 'Hide comments' : 'Show comments'}
       </button>
 
       {isVisible && (
-        <div id="comment-content" className="comment-wrapper">
-          <div className="comment-form-card">
-            <h2>Leave a comment</h2>
-            <form className="comment-form" onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="name">Your name</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Enter your name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  aria-required="true"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="comment">Your comment</label>
-                <textarea
-                  name="comment"
-                  id="comment"
-                  placeholder="Share your thoughts..."
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  rows={4}
-                  required
-                  aria-required="true"
-                />
-              </div>
-              <button type="submit" className="submit-btn">
-                Post comment
-              </button>
-            </form>
-          </div>
+        <div
+          id={`${formId}-content`}
+          className="comment-wrapper"
+          role="region"
+          aria-label="Comments"
+        >
+          <h2 id={`${formId}-form-heading`}>Add comment</h2>
+          <form
+            className="comment-form"
+            onSubmit={handleSubmit}
+            aria-labelledby={`${formId}-form-heading`}
+          >
+            <div className="flex-pair">
+              <label htmlFor={`${formId}-name`}>Your name</label>
+              <input
+                type="text"
+                name="name"
+                id={`${formId}-name`}
+                placeholder="Enter your name"
+                value={name}
+                onChange={handleNameChange}
+                aria-required="true"
+                autoComplete="name"
+              />
+            </div>
+            <div className="flex-pair">
+              <label htmlFor={`${formId}-comment`}>Your comment</label>
+              <textarea
+                name="comment"
+                id={`${formId}-comment`}
+                placeholder="Share your thoughts about bears..."
+                value={comment}
+                onChange={handleCommentChange}
+                aria-required="true"
+                rows={4}
+              />
+            </div>
+            <div>
+              <input
+                type="submit"
+                value="Submit comment"
+                disabled={!isFormValid}
+                aria-disabled={!isFormValid}
+              />
+            </div>
+          </form>
 
-          <div className="comments-list-section">
-            <h2>
-              Comments{' '}
-              <span className="comment-count">({commentCount})</span>
-            </h2>
-            <ul className="comment-container" role="list">
-              {comments.map((commentItem, index) => (
-                <li key={index} className="comment-card" role="listitem">
-                  <div className="comment-avatar" aria-hidden="true">
-                    {getInitials(commentItem.name)}
-                  </div>
-                  <div className="comment-content">
-                    <div className="comment-header">
-                      <span className="comment-author">{commentItem.name}</span>
+          <h2 id={`${formId}-comments-heading`}>
+            Comments {comments.length > 0 && `(${comments.length})`}
+          </h2>
+
+          {comments.length === 0 ? (
+            <p className="comment-empty">
+              No comments yet. Be the first to share your thoughts!
+            </p>
+          ) : (
+            <ul
+              className="comment-container"
+              aria-labelledby={`${formId}-comments-heading`}
+            >
+              {comments.map((commentItem) => (
+                <li key={commentItem.id} className="comment-card">
+                  <div className="comment-header">
+                    <div
+                      className={`comment-avatar ${getAvatarVariant(commentItem.name)}`}
+                      aria-hidden="true"
+                    >
+                      {getInitials(commentItem.name)}
+                    </div>
+                    <div className="comment-meta">
+                      <p className="comment-author">{commentItem.name}</p>
                       <time
                         className="comment-time"
                         dateTime={commentItem.timestamp.toISOString()}
@@ -138,15 +220,14 @@ export const CommentSection: React.FC = () => {
                         {formatRelativeTime(commentItem.timestamp)}
                       </time>
                     </div>
-                    <p className="comment-text">{commentItem.text}</p>
                   </div>
+                  <p className="comment-text">{commentItem.text}</p>
                 </li>
               ))}
             </ul>
-          </div>
+          )}
         </div>
       )}
     </section>
   );
 };
-
