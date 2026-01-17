@@ -1,10 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { render, screen, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   CommentSection,
-  getInitials,
-  getAvatarVariant,
   isValidComment,
   formatRelativeTime,
   Comment,
@@ -12,69 +10,6 @@ import {
 
 describe('CommentSection', () => {
   describe('Utility Functions', () => {
-    describe('getInitials', () => {
-      it('returns initials for a two-word name', () => {
-        expect(getInitials('John Doe')).toBe('JD');
-      });
-
-      it('returns single initial for a one-word name', () => {
-        expect(getInitials('Alice')).toBe('A');
-      });
-
-      it('returns initials from first and last word for multi-word names', () => {
-        expect(getInitials('Mary Jane Watson')).toBe('MW');
-      });
-
-      it('handles empty string by returning question mark', () => {
-        expect(getInitials('')).toBe('?');
-      });
-
-      it('handles whitespace-only string by returning question mark', () => {
-        expect(getInitials('   ')).toBe('?');
-      });
-
-      it('handles extra whitespace between words', () => {
-        expect(getInitials('John    Doe')).toBe('JD');
-      });
-
-      it('returns uppercase initials for lowercase names', () => {
-        expect(getInitials('jane doe')).toBe('JD');
-      });
-    });
-
-    describe('getAvatarVariant', () => {
-      it('returns empty string for variant 0', () => {
-        // Find a name that produces variant 0
-        const result = getAvatarVariant('test');
-        expect(typeof result).toBe('string');
-      });
-
-      it('returns consistent variant for same name', () => {
-        const variant1 = getAvatarVariant('John Doe');
-        const variant2 = getAvatarVariant('John Doe');
-        expect(variant1).toBe(variant2);
-      });
-
-      it('returns different variants for different names', () => {
-        const variants = new Set([
-          getAvatarVariant('Alice'),
-          getAvatarVariant('Bob'),
-          getAvatarVariant('Charlie'),
-          getAvatarVariant('Diana'),
-          getAvatarVariant('Eve'),
-        ]);
-        // At least some should be different
-        expect(variants.size).toBeGreaterThan(1);
-      });
-
-      it('returns valid CSS class format', () => {
-        const variant = getAvatarVariant('John Doe');
-        if (variant !== '') {
-          expect(variant).toMatch(/^comment-avatar--variant-[1-4]$/);
-        }
-      });
-    });
-
     describe('isValidComment', () => {
       it('returns true for valid name and text', () => {
         expect(isValidComment('John', 'Great post!')).toBe(true);
@@ -142,7 +77,7 @@ describe('CommentSection', () => {
 
     it('hides comment content by default', () => {
       render(<CommentSection />);
-      expect(screen.queryByText('Add comment')).not.toBeInTheDocument();
+      expect(screen.queryByText(/add a comment/i)).not.toBeInTheDocument();
     });
 
     it('shows content when button is clicked', async () => {
@@ -151,7 +86,7 @@ describe('CommentSection', () => {
 
       await user.click(screen.getByRole('button', { name: /show comments/i }));
 
-      expect(screen.getByText('Add comment')).toBeInTheDocument();
+      expect(screen.getByText(/add a comment/i)).toBeInTheDocument();
     });
 
     it('toggles button text when clicked', async () => {
@@ -183,6 +118,7 @@ describe('CommentSection', () => {
           name: 'Test User',
           text: 'This is a test comment',
           timestamp: new Date(),
+          upvotes: 0,
         },
       ];
 
@@ -199,9 +135,7 @@ describe('CommentSection', () => {
 
       await user.click(screen.getByRole('button', { name: /show comments/i }));
 
-      expect(
-        screen.getByText(/no comments yet/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/no comments yet/i)).toBeInTheDocument();
     });
 
     it('displays comment count in heading', async () => {
@@ -210,7 +144,7 @@ describe('CommentSection', () => {
 
       await user.click(screen.getByRole('button', { name: /show comments/i }));
 
-      expect(screen.getByText(/comments \(1\)/i)).toBeInTheDocument();
+      expect(screen.getByText('(1)')).toBeInTheDocument();
     });
   });
 
@@ -327,7 +261,7 @@ describe('CommentSection', () => {
 
       await user.click(screen.getByRole('button', { name: /show comments/i }));
 
-      expect(screen.getByText(/comments \(1\)/i)).toBeInTheDocument();
+      expect(screen.getByText('(1)')).toBeInTheDocument();
 
       await user.type(screen.getByLabelText(/your name/i), 'Jane Doe');
       await user.type(
@@ -339,7 +273,7 @@ describe('CommentSection', () => {
         screen.getByRole('button', { name: /submit comment/i })
       );
 
-      expect(screen.getByText(/comments \(2\)/i)).toBeInTheDocument();
+      expect(screen.getByText('(2)')).toBeInTheDocument();
     });
 
     it('trims whitespace from submitted name and comment', async () => {
@@ -361,6 +295,183 @@ describe('CommentSection', () => {
       // The text should appear without leading/trailing whitespace
       expect(screen.getByText('John')).toBeInTheDocument();
       expect(screen.getByText('My comment')).toBeInTheDocument();
+    });
+
+    it('new comment starts with zero upvotes', async () => {
+      const user = userEvent.setup();
+      render(<CommentSection initialComments={[]} />);
+
+      await user.click(screen.getByRole('button', { name: /show comments/i }));
+
+      await user.type(screen.getByLabelText(/your name/i), 'Jane Doe');
+      await user.type(screen.getByLabelText(/your comment/i), 'New comment');
+
+      await user.click(
+        screen.getByRole('button', { name: /submit comment/i })
+      );
+
+      // Check the upvote button shows 0
+      const upvoteButton = screen.getByRole('button', {
+        name: /upvote comment by jane doe/i,
+      });
+      expect(upvoteButton).toHaveTextContent('0');
+    });
+  });
+
+  describe('Success Message', () => {
+    it('displays success message after submitting a comment', async () => {
+      const user = userEvent.setup();
+      render(<CommentSection />);
+
+      await user.click(screen.getByRole('button', { name: /show comments/i }));
+
+      await user.type(screen.getByLabelText(/your name/i), 'Test User');
+      await user.type(screen.getByLabelText(/your comment/i), 'Test comment');
+      await user.click(screen.getByRole('button', { name: /submit comment/i }));
+
+      expect(
+        screen.getByText(/your comment has been added successfully/i)
+      ).toBeInTheDocument();
+    });
+
+    it('success message has correct role for accessibility', async () => {
+      const user = userEvent.setup();
+      render(<CommentSection />);
+
+      await user.click(screen.getByRole('button', { name: /show comments/i }));
+
+      await user.type(screen.getByLabelText(/your name/i), 'Test User');
+      await user.type(screen.getByLabelText(/your comment/i), 'Test comment');
+      await user.click(screen.getByRole('button', { name: /submit comment/i }));
+
+      const successMessage = screen.getByRole('status');
+      expect(successMessage).toBeInTheDocument();
+      expect(successMessage).toHaveAttribute('aria-live', 'polite');
+    });
+
+    it('success message disappears after 3 seconds', () => {
+      vi.useFakeTimers();
+      render(<CommentSection />);
+
+      // Use fireEvent to avoid timer issues with userEvent
+      fireEvent.click(screen.getByRole('button', { name: /show comments/i }));
+
+      fireEvent.change(screen.getByLabelText(/your name/i), {
+        target: { value: 'Test User' },
+      });
+      fireEvent.change(screen.getByLabelText(/your comment/i), {
+        target: { value: 'Test comment' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /submit comment/i }));
+
+      expect(
+        screen.getByText(/your comment has been added successfully/i)
+      ).toBeInTheDocument();
+
+      // Fast-forward 3 seconds
+      act(() => {
+        vi.advanceTimersByTime(3000);
+      });
+
+      expect(
+        screen.queryByText(/your comment has been added successfully/i)
+      ).not.toBeInTheDocument();
+
+      vi.useRealTimers();
+    });
+  });
+
+  describe('Upvote Functionality', () => {
+    it('displays upvote count for each comment', async () => {
+      const user = userEvent.setup();
+      render(<CommentSection />);
+
+      await user.click(screen.getByRole('button', { name: /show comments/i }));
+
+      // Default comment has 5 upvotes
+      expect(screen.getByText('5')).toBeInTheDocument();
+    });
+
+    it('increments upvote count when upvote button is clicked', async () => {
+      const user = userEvent.setup();
+      render(<CommentSection />);
+
+      await user.click(screen.getByRole('button', { name: /show comments/i }));
+
+      const upvoteButton = screen.getByRole('button', {
+        name: /upvote comment by bob fossil/i,
+      });
+      expect(upvoteButton).toHaveTextContent('5');
+
+      await user.click(upvoteButton);
+      expect(upvoteButton).toHaveTextContent('6');
+    });
+
+    it('allows multiple upvotes on the same comment', async () => {
+      const user = userEvent.setup();
+      render(<CommentSection />);
+
+      await user.click(screen.getByRole('button', { name: /show comments/i }));
+
+      const upvoteButton = screen.getByRole('button', {
+        name: /upvote comment by bob fossil/i,
+      });
+
+      await user.click(upvoteButton);
+      await user.click(upvoteButton);
+      await user.click(upvoteButton);
+
+      expect(upvoteButton).toHaveTextContent('8');
+    });
+
+    it('upvote button has accessible label with current count', async () => {
+      const user = userEvent.setup();
+      render(<CommentSection />);
+
+      await user.click(screen.getByRole('button', { name: /show comments/i }));
+
+      const upvoteButton = screen.getByRole('button', {
+        name: /upvote comment by bob fossil.*current upvotes: 5/i,
+      });
+      expect(upvoteButton).toBeInTheDocument();
+    });
+
+    it('upvotes only the specific comment', async () => {
+      const user = userEvent.setup();
+      const customComments: Comment[] = [
+        {
+          id: 'test-1',
+          name: 'User One',
+          text: 'First comment',
+          timestamp: new Date(),
+          upvotes: 3,
+        },
+        {
+          id: 'test-2',
+          name: 'User Two',
+          text: 'Second comment',
+          timestamp: new Date(),
+          upvotes: 7,
+        },
+      ];
+
+      render(<CommentSection initialComments={customComments} />);
+      await user.click(screen.getByRole('button', { name: /show comments/i }));
+
+      const upvoteButton1 = screen.getByRole('button', {
+        name: /upvote comment by user one/i,
+      });
+      const upvoteButton2 = screen.getByRole('button', {
+        name: /upvote comment by user two/i,
+      });
+
+      expect(upvoteButton1).toHaveTextContent('3');
+      expect(upvoteButton2).toHaveTextContent('7');
+
+      await user.click(upvoteButton1);
+
+      expect(upvoteButton1).toHaveTextContent('4');
+      expect(upvoteButton2).toHaveTextContent('7');
     });
   });
 
@@ -435,36 +546,49 @@ describe('CommentSection', () => {
       const listItems = screen.getAllByRole('listitem');
       expect(listItems.length).toBeGreaterThan(0);
     });
-  });
 
-  describe('Avatar Display', () => {
-    it('displays correct initials for commenter', async () => {
+    it('uses semantic article element for comments', async () => {
       const user = userEvent.setup();
       render(<CommentSection />);
 
       await user.click(screen.getByRole('button', { name: /show comments/i }));
 
-      // Bob Fossil should have initials BF
-      expect(screen.getByText('BF')).toBeInTheDocument();
+      expect(screen.getByRole('article')).toBeInTheDocument();
     });
 
-    it('displays initials for newly added comment', async () => {
+    it('uses time element with datetime attribute for timestamps', async () => {
       const user = userEvent.setup();
-      render(<CommentSection initialComments={[]} />);
+      render(<CommentSection />);
 
       await user.click(screen.getByRole('button', { name: /show comments/i }));
 
-      await user.type(screen.getByLabelText(/your name/i), 'Jane Smith');
-      await user.type(
-        screen.getByLabelText(/your comment/i),
-        'New comment'
-      );
+      const timeElement = screen.getByRole('article').querySelector('time');
+      expect(timeElement).toHaveAttribute('dateTime');
+    });
+  });
 
-      await user.click(
-        screen.getByRole('button', { name: /submit comment/i })
-      );
+  describe('Comment Display without Avatars', () => {
+    it('displays author name without avatar', async () => {
+      const user = userEvent.setup();
+      render(<CommentSection />);
 
-      expect(screen.getByText('JS')).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: /show comments/i }));
+
+      // Author name should be visible
+      expect(screen.getByText('Bob Fossil')).toBeInTheDocument();
+
+      // No avatar initials should be displayed
+      expect(screen.queryByText('BF')).not.toBeInTheDocument();
+    });
+
+    it('displays timestamp for comments', async () => {
+      const user = userEvent.setup();
+      render(<CommentSection />);
+
+      await user.click(screen.getByRole('button', { name: /show comments/i }));
+
+      // Should show relative time
+      expect(screen.getByText(/1 days ago/)).toBeInTheDocument();
     });
   });
 });
