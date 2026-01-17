@@ -1,0 +1,68 @@
+name: Codex Apply (Issue -> PR)
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  apply:
+    if: github.event.label.name == 'codex:go'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Write issue and comments to SPEC.md
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+            });
+
+            let spec = `# Issue: ${issue.title}\n\n`;
+            spec += `## Original Description\n${issue.body}\n\n`;
+            spec += `## Clarifications (from comments)\n`;
+
+            for (const c of comments.data) {
+              spec += `- ${c.user.login}: ${c.body}\n\n`;
+            }
+
+            require("fs").writeFileSync("SPEC.md", spec);
+
+
+      - name: Run Codex (make edits)
+        id: run_codex
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/codex/prompts/issue_apply.md
+          output-file: codex-apply.md
+          safety-strategy: drop-sudo
+          sandbox: workspace-write
+          codex-args: '["--full-auto"]'
+        
+      - name: App sanity check (no syntax errors)
+        run: |
+          git diff --check
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "Codex: ${{ github.event.issue.title }}"
+          body: |
+            Implements: #${{ github.event.issue.number }}
+
+            Codex output:
+            - See `codex-apply.md` in this branch for details.
+          branch: codex/issue-${{ github.event.issue.number }}
+          commit-message: "Codex: implement #${{ github.event.issue.number }}"
