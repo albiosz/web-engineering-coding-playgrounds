@@ -1,4 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faFileLines,
+  faFolder,
+  faHouse,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
 
 export const Nav: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -83,16 +90,44 @@ export const Nav: React.FC = () => {
     <nav>
       <ul>
         <li>
-          <a href="#">Home</a>
+          <a href="#">
+            <FontAwesomeIcon
+              icon={faHouse}
+              className="nav-icon"
+              aria-label="Home icon"
+            />
+            <span>Home</span>
+          </a>
         </li>
         <li>
-          <a href="#">Our team</a>
+          <a href="#">
+            <FontAwesomeIcon
+              icon={faUsers}
+              className="nav-icon"
+              aria-label="Our team icon"
+            />
+            <span>Our team</span>
+          </a>
         </li>
         <li>
-          <a href="#">Projects</a>
+          <a href="#">
+            <FontAwesomeIcon
+              icon={faFolder}
+              className="nav-icon"
+              aria-label="Projects icon"
+            />
+            <span>Projects</span>
+          </a>
         </li>
         <li>
-          <a href="#">Blog</a>
+          <a href="#">
+            <FontAwesomeIcon
+              icon={faFileLines}
+              className="nav-icon"
+              aria-label="Blog icon"
+            />
+            <span>Blog</span>
+          </a>
         </li>
       </ul>
 

@@ -16,5 +16,16 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    files: ['**/*.{test,spec}.{ts,tsx}'],
+    plugins: { js },
+    extends: ['js/recommended'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.vitest,
+      },
+    },
+  },
   tseslint.configs.recommended,
 ]);
