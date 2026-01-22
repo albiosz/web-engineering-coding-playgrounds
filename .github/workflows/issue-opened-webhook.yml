@@ -13,6 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: React with rocket
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.reactions.createForIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              content: "rocket",
+            });
+
       - name: Send webhook notification
         run: |
           WEBHOOK_URL="${{ vars.WEBHOOK_ISSUE_CREATION_URL }}"
@@ -38,16 +51,3 @@ jobs:
             --show-error
           
           echo "Webhook sent successfully for issue #${{ github.event.issue.number }}"
-      
-      - name: React with rocket
-        if: success()
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            await github.rest.reactions.createForIssue({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              content: "rocket",
-            });
