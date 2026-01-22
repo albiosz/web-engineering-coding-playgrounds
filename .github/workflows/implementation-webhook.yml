@@ -12,6 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: React with thumbs up
+        if: success()
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comment-id: ${{ github.event.comment.id }}
+          reactions: "rocket"
+
       - name: Send webhook notification
         env:
           COMMENT_BODY: ${{ github.event.comment.body }}
@@ -51,10 +59,3 @@ jobs:
           
           echo "Webhook sent successfully for comment action: ${{ github.event.action }}"
       
-      - name: React with thumbs up
-        if: success()
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          comment-id: ${{ github.event.comment.id }}
-          reactions: "+1"
