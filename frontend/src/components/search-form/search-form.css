@@ -1,0 +1,105 @@
+/**
+ * Search Form Styles
+ * 
+ * Styling for the search form component positioned at the top of the page.
+ * Maintains consistency with the existing design while being adaptable to
+ * the new sidebar layout.
+ */
+
+/* ==========================================================================
+   Container Styles
+   ========================================================================== */
+
+/**
+ * Search form container
+ * Positioned at the top-right area of the page
+ */
+.search-form-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 20px;
+  background-color: #ff80ff; /* Maintains original nav background color */
+  margin-bottom: 10px;
+}
+
+/* ==========================================================================
+   Form Styles
+   ========================================================================== */
+
+/**
+ * Search form layout
+ */
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/**
+ * Search input field
+ */
+.search-form__input {
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 1.6rem;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 200px;
+}
+
+.search-form__input:focus {
+  outline: 2px solid #2a2a2a;
+  outline-offset: 1px;
+  border-color: #2a2a2a;
+}
+
+/**
+ * Search submit button
+ * Uses black background matching the sidebar toggle button
+ */
+.search-form__submit {
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 1.6rem;
+  height: 32px;
+  padding: 0 20px;
+  background-color: #333; /* Black button */
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-form__submit:hover {
+  background-color: #555;
+}
+
+.search-form__submit:focus {
+  outline: 2px solid #2a2a2a;
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Responsive Styles
+   ========================================================================== */
+
+/**
+ * Mobile - full width, centered search
+ */
+@media screen and (max-width: 767px) {
+  .search-form-container {
+    justify-content: center;
+    padding: 10px 15px;
+  }
+  
+  .search-form {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .search-form__input {
+    min-width: 150px;
+    flex: 1;
+  }
+}

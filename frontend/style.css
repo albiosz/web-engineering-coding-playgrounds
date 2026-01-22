@@ -30,9 +30,70 @@ html {
 }
 
 body {
-  width: 80%;
-  min-width: 1024px;
-  margin: 0 auto;
+  width: 100%;
+  min-width: 320px;
+  margin: 0;
+}
+
+/* ==========================================================================
+   App Layout Styles (Sidebar Integration)
+   ========================================================================== */
+
+/**
+ * Main app layout container
+ */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/**
+ * Main content area - adjusts based on sidebar state
+ * Uses margin-left to account for fixed sidebar width
+ */
+.app-content {
+  flex: 1;
+  margin-left: 220px;
+  transition: margin-left 0.3s ease-in-out;
+  width: calc(100% - 220px);
+}
+
+/**
+ * Content area when sidebar is collapsed
+ */
+.app-layout--sidebar-collapsed .app-content {
+  margin-left: 60px;
+  width: calc(100% - 60px);
+}
+
+/**
+ * Responsive layout adjustments for tablet
+ */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+  .app-content {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+  
+  .app-layout--sidebar-collapsed .app-content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+}
+
+/**
+ * Mobile layout - no sidebar offset needed
+ */
+@media screen and (max-width: 767px) {
+  .app-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .app-layout--sidebar-collapsed .app-content {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 /* || typography */
@@ -76,11 +137,10 @@ header {
   margin-bottom: 10px;
 } 
 
-nav, article, footer, .secondary {
-  background-color: #a8d5a8;  /* Changed from 'green' (#008000) for WCAG AA compliance: 7.2:1 contrast ratio with #2a2a2a text */
-}
+/* Note: nav styles moved to sidebar component (sidebar.css) */
 
 article, footer, .secondary {
+  background-color: #a8d5a8;  /* Changed from 'green' (#008000) for WCAG AA compliance: 7.2:1 contrast ratio with #2a2a2a text */
   padding: 10px 30px;
 }
 
@@ -88,64 +148,11 @@ article {
   margin-right: 10px;
 }
 
-nav {
-  height: 50px;
-  background-color: #ff80ff; /* Fixed: Added missing '#' for valid CSS color syntax */
-  display: flex;
-  padding: 1% 0;
-  margin-bottom: 10px;
-}
-
-nav ul {
-  padding: 0;
-  list-style-type: none;
-  flex: 2;
-  display: flex;
-}
-
-nav li {
-  display: inline;
-  text-align: center;
-  flex: 1;
-}
-
-nav a {
-  display: inline-block;
-  font-size: 2rem;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: black;
-}
-
-nav .search {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding: 0 2em;
-}
-
-.search input {
-  font-size: 1.6rem;
-  height: 32px;
-}
-
-.search input[type="search"] {
-  flex: 3;
-}
-
-.search input[type="submit"] {
-  flex: 1;
-  margin-left: 1rem;
-  background: #333;
-  border: 0;
-  color: white;
-}
-
 /* || main layout */
 
 main {
   display: flex;
+  padding: 0 20px;
 }
 
 article {
@@ -158,6 +165,44 @@ article {
 
 footer {
   margin-top: 10px;
+}
+
+/* Responsive main layout adjustments */
+@media screen and (max-width: 767px) {
+  main {
+    flex-direction: column;
+    padding: 0 10px;
+  }
+  
+  article {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  
+  article, footer, .secondary {
+    padding: 10px 15px;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+  
+  h3 {
+    font-size: 1.8rem;
+  }
+  
+  p, li, table {
+    font-size: 1.4rem;
+  }
+  
+  audio {
+    width: 100%;
+    max-width: 500px;
+  }
 }
 
 /* Table styling */
