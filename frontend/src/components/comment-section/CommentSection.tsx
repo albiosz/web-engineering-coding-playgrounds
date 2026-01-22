@@ -18,69 +18,99 @@ export const CommentSection: React.FC = () => {
   const [comment, setComment] = useState('');
 
   const toggleVisibility = () => {
-    setIsVisible(!isVisible);
+    setIsVisible((prev) => !prev);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (name.trim() && comment.trim()) {
+    const trimmedName = name.trim();
+    const trimmedComment = comment.trim();
+    const canSubmit = trimmedName.length > 0 && trimmedComment.length > 0;
+
+    if (canSubmit) {
       const newComment: Comment = {
-        name: name,
-        text: comment,
+        name: trimmedName,
+        text: trimmedComment,
       };
 
-      console.log(`New comment from ${name}: ${comment}`);
+      console.log(`New comment from ${trimmedName}: ${trimmedComment}`);
 
-      setComments([...comments, newComment]);
+      setComments((prev) => [...prev, newComment]);
       setName('');
       setComment('');
     }
   };
 
   return (
-    <section className="comments">
-      <button className="show-hide" onClick={toggleVisibility}>
-        {isVisible ? 'Hide comments' : 'Show comments'}
-      </button>
+    <section className="comments" aria-label="Comments">
+      <div className="comments__header">
+        <h2 className="comments__heading">Comments</h2>
+        <button
+          className="comments__toggle"
+          type="button"
+          onClick={toggleVisibility}
+          aria-expanded={isVisible}
+        >
+          {isVisible ? 'Hide' : 'Show'} ({comments.length})
+        </button>
+      </div>
 
       {isVisible && (
-        <div className="comment-wrapper">
-          <h2>Add comment</h2>
-          <form className="comment-form" onSubmit={handleSubmit}>
-            <div className="flex-pair">
-              <label htmlFor="name">Your name:</label>
+        <div className="comments__panel">
+          <form className="comments__form" onSubmit={handleSubmit}>
+            <div className="comments__field">
+              <label className="comments__label" htmlFor="name">
+                Name
+              </label>
               <input
+                className="comments__input"
                 type="text"
                 name="name"
                 id="name"
                 placeholder="Enter your name"
+                autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            <div className="flex-pair">
-              <label htmlFor="comment">Your comment:</label>
-              <input
-                type="text"
+
+            <div className="comments__field">
+              <label className="comments__label" htmlFor="comment">
+                Comment
+              </label>
+              <textarea
+                className="comments__textarea"
                 name="comment"
                 id="comment"
-                placeholder="Enter your comment"
+                placeholder="Write your comment..."
+                rows={4}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
               />
             </div>
-            <div>
-              <input type="submit" value="Submit comment" />
+
+            <div className="comments__actions">
+              <button
+                className="comments__submit"
+                type="submit"
+                disabled={!name.trim() || !comment.trim()}
+              >
+                Submit
+              </button>
             </div>
           </form>
 
-          <h2>Comments</h2>
-          <ul className="comment-container">
-            {comments.map((comment, index) => (
-              <li key={index}>
-                <p>{comment.name}</p>
-                <p>{comment.text}</p>
+          <ul className="comments__list" aria-label="Comment list">
+            {comments.map((c, index) => (
+              <li key={`${c.name}-${index}`} className="comments__item">
+                <div className="comments__itemHeader">
+                  <span className="comments__avatar" aria-hidden="true">
+                    {c.name.trim().slice(0, 1).toUpperCase()}
+                  </span>
+                  <span className="comments__author">{c.name}</span>
+                </div>
+                <p className="comments__text">{c.text}</p>
               </li>
             ))}
           </ul>
