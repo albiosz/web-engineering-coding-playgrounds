@@ -67,14 +67,8 @@ export const SearchForm: React.FC = () => {
       // Clear any existing highlights before searching
       resetPreviousHighlights();
 
-      const searchForm = e.target as HTMLFormElement;
-      if (!searchForm) {
-        console.error('Target element not found');
-        return;
-      }
-
-      // Get the search query and trim whitespace
-      const searchKey = searchForm.q.value.trim();
+      // Use controlled state value instead of form element
+      const searchKey = searchQuery.trim();
       if (!searchKey) return;
 
       // Create regex pattern for case-insensitive global matching
@@ -134,7 +128,7 @@ export const SearchForm: React.FC = () => {
       const articles = document.querySelectorAll('article');
       articles.forEach(walk);
     },
-    [resetPreviousHighlights]
+    [resetPreviousHighlights, searchQuery]
   );
 
   return (
