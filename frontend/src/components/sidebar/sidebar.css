@@ -1,0 +1,241 @@
+/**
+ * Sidebar Styles
+ * 
+ * A modern, collapsible left-side navigation component with:
+ * - Light green color scheme matching the website theme
+ * - Smooth transitions for collapse/expand animations
+ * - Responsive design with mobile hiding
+ * - Active state highlighting with grey background
+ * - Black toggle buttons
+ */
+
+/* ==========================================================================
+   Base Sidebar Styles
+   ========================================================================== */
+
+/**
+ * Main sidebar container
+ * Uses fixed positioning on left side of viewport
+ * Transitions smoothly when toggling collapsed state
+ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 220px;
+  background-color: #a8d5a8; /* Light green from website palette */
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: width 0.3s ease-in-out;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  padding-top: 80px; /* Space for header */
+}
+
+/**
+ * Collapsed state - sidebar shrinks to icon-only width
+ */
+.sidebar--collapsed {
+  width: 60px;
+}
+
+/* ==========================================================================
+   Toggle Button Styles
+   ========================================================================== */
+
+/**
+ * Toggle button for collapsing/expanding sidebar
+ * Positioned at top of sidebar with black background
+ */
+.sidebar__toggle {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-color: #333; /* Black button as per requirements */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  z-index: 1001;
+}
+
+.sidebar__toggle:hover {
+  background-color: #555;
+  transform: scale(1.05);
+}
+
+.sidebar__toggle:focus {
+  outline: 2px solid #2a2a2a;
+  outline-offset: 2px;
+}
+
+.sidebar__toggle-icon {
+  color: white;
+  font-size: 1.6rem;
+}
+
+/* Adjust toggle position when collapsed */
+.sidebar--collapsed .sidebar__toggle {
+  right: 10px;
+}
+
+/* ==========================================================================
+   Navigation Styles
+   ========================================================================== */
+
+/**
+ * Navigation container within sidebar
+ */
+.sidebar__nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/**
+ * Navigation list - removes default list styling
+ */
+.sidebar__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/**
+ * Individual navigation item
+ */
+.sidebar__item {
+  margin: 5px 10px;
+}
+
+/**
+ * Navigation link styling
+ * Uses flexbox for icon and label alignment
+ * Includes smooth transition for hover effects
+ */
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  text-decoration: none;
+  color: #2a2a2a;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar__link:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/**
+ * Active link state - grey background for current page
+ */
+.sidebar__link--active {
+  background-color: #808080; /* Grey background for active state */
+  color: white;
+}
+
+.sidebar__link--active:hover {
+  background-color: #6a6a6a;
+}
+
+/**
+ * Icon styling within navigation links
+ */
+.sidebar__icon {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  font-size: 1.8rem;
+  margin-right: 15px;
+  transition: margin 0.3s ease-in-out;
+}
+
+/**
+ * Label text styling
+ */
+.sidebar__label {
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Hide labels when sidebar is collapsed */
+.sidebar--collapsed .sidebar__label {
+  opacity: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+/* Adjust icon margin when collapsed */
+.sidebar--collapsed .sidebar__icon {
+  margin-right: 0;
+}
+
+/* Center the link content when collapsed */
+.sidebar--collapsed .sidebar__link {
+  justify-content: center;
+  padding: 12px;
+}
+
+/* ==========================================================================
+   Responsive Styles
+   ========================================================================== */
+
+/**
+ * Desktop (1200px+)
+ * Full sidebar with all features enabled
+ */
+@media screen and (min-width: 1200px) {
+  .sidebar {
+    width: 220px;
+  }
+  
+  .sidebar--collapsed {
+    width: 60px;
+  }
+}
+
+/**
+ * Tablet (768px - 1199px)
+ * Slightly narrower sidebar
+ */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+  .sidebar {
+    width: 200px;
+  }
+  
+  .sidebar--collapsed {
+    width: 60px;
+  }
+  
+  .sidebar__link {
+    padding: 10px 12px;
+    font-size: 1.5rem;
+  }
+  
+  .sidebar__icon {
+    font-size: 1.6rem;
+    margin-right: 12px;
+  }
+}
+
+/**
+ * Mobile (< 768px)
+ * Sidebar is completely hidden on mobile devices
+ */
+@media screen and (max-width: 767px) {
+  .sidebar {
+    display: none;
+  }
+}
