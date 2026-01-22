@@ -5,5 +5,10 @@ export default defineConfig({
   build: {
     minify: 'esbuild', // default setting
   },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './vitest.setup.ts',
+  },
 })
 
