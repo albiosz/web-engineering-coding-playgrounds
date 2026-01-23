@@ -1,0 +1,696 @@
+{
+  "name": "AI-Engineering-Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $json.body.repository_owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $json.body.repository_name }}",
+          "mode": "name"
+        },
+        "issueNumber": "={{ $json.body.issue_id }}"
+      },
+      "id": "d71a504c-badb-4467-b9cf-ef9d9a2e4149",
+      "name": "GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        96,
+        64
+      ],
+      "webhookId": "4cd681c7-c26f-4428-8e38-e393dee24a5f",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "7kgBw3GCSDOWcZYr",
+          "name": "GitHub account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Merge to Agent').item.json.issue_number }}",
+        "contextWindowLength": 10
+      },
+      "id": "e7c59cb2-6afa-49d1-b9ac-9ec11c3cac72",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"title\": {\n      \"type\": \"string\",\n      \"description\": \"The title of the issue or request\"\n    },\n    \"overview\": {\n      \"type\": \"string\",\n      \"description\": \"A high-level overview of the topic\"\n    },\n    \"request\": {\n      \"type\": \"string\",\n      \"description\": \"The specific request or requirement\"\n    },\n    \"acceptanceCriteria\": {\n      \"type\": \"string\",\n      \"description\": \"The criteria that must be met for completion\"\n    }\n  },\n  \"required\": [\"title\", \"overview\", \"request\", \"acceptanceCriteria\"],\n  \"additionalProperties\": false\n}",
+        "autoFix": true
+      },
+      "id": "5b5cb058-b0b7-4fc5-bde2-67baf3825271",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1152,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-4-5-20251001",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 4.5"
+        },
+        "options": {}
+      },
+      "id": "901ef2cd-27b2-4f25-85f1-3c7e946a4de2",
+      "name": "Anthropic Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        496
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "7Ue80Lqh1dJMmgrM",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-5-20250929",
+          "cachedResultName": "Claude Sonnet 4.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1152,
+        768
+      ],
+      "id": "08ed173f-ac28-4ca3-847e-d66147449550",
+      "name": "Anthropic Chat Model2",
+      "credentials": {
+        "anthropicApi": {
+          "id": "7Ue80Lqh1dJMmgrM",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawData = $input.first().json.content[0].text\nreturn JSON.parse(rawData);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        -256
+      ],
+      "id": "fa763920-ff77-40cc-bbb2-24b8a70c0dee",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this tool to retrieve technical information, code snippets, and documentation from the https://github.com/albiosz/web-engineering-coding-playgrounds GitHub repository. It contains the latest source code, project structure, and implementation details. When a user asks questions about how the code works, where specific functions are located, or how to use the project, use this tool to find relevant context before answering.",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        880,
+        512
+      ],
+      "id": "54b166f4-dcc1-4be2-a903-94cae2e7cb70",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "YVxItVpXdUhugwpC",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        768
+      ],
+      "id": "65bd885e-673a-4d97-90be-76bc9d7aca8c",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "FtogdXwWOfpqjMCg",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "albiosz",
+          "mode": "list",
+          "cachedResultName": "albiosz",
+          "cachedResultUrl": "https://github.com/albiosz"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "web-engineering-coding-playgrounds",
+          "mode": "list",
+          "cachedResultName": "web-engineering-coding-playgrounds",
+          "cachedResultUrl": "https://github.com/albiosz/web-engineering-coding-playgrounds"
+        }
+      },
+      "type": "n8n-nodes-base.githubTool",
+      "typeVersion": 1.1,
+      "position": [
+        688,
+        768
+      ],
+      "id": "5d062ec8-1ca4-4cd7-b1d6-506aaad30dc2",
+      "name": "List files in GitHub",
+      "webhookId": "52e9921f-7b67-4911-9277-fb26d8c4c816",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "7kgBw3GCSDOWcZYr",
+          "name": "GitHub account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "albiosz",
+          "mode": "list",
+          "cachedResultName": "albiosz",
+          "cachedResultUrl": "https://github.com/albiosz"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "web-engineering-coding-playgrounds",
+          "mode": "list",
+          "cachedResultName": "web-engineering-coding-playgrounds",
+          "cachedResultUrl": "https://github.com/albiosz/web-engineering-coding-playgrounds"
+        },
+        "filePath": "={{ $fromAI(\"file_path\", \"The full path to the file to read (e.g., 'src/index.js')\") }}",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.githubTool",
+      "typeVersion": 1.1,
+      "position": [
+        512,
+        752
+      ],
+      "id": "90d679d1-f8c5-48ef-be30-ccb468ba4db3",
+      "name": "Get a file in GitHub",
+      "webhookId": "2909ff3a-849c-4117-9642-10e2cec4ef32",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "7kgBw3GCSDOWcZYr",
+          "name": "GitHub account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -288
+      ],
+      "id": "2e75c8fb-0cf8-4d2e-a750-96b4dc7746b1",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "anthropicApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "anthropic-beta",
+              "value": "structured-outputs-2025-11-13"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 1024,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Improve the structure of the ticket to follow a structure\\n\\nTitle\\nOverview\\nRequest\\nAcceptance Criteria\\n\\nDo not assume things, just leave good questions if there are things that need to be discussed. Take the most of the text and ask for the rest. Put the questions to the specific sections and leave a prepared space for answers - like a [PLACEHOLDER] or simply an ANSWER: subelement of a list. \\n\\nThe initial ticket text:\\nTitle: {{ JSON.stringify($json.title).slice(1, -1) }}\\nDescription: {{ JSON.stringify($json.body).slice(1, -1) }}\"\n    }\n  ],\n  \"output_format\": {\n    \"type\": \"json_schema\",\n    \"schema\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"title\": { \"type\": \"string\" },\n        \"overview\": { \"type\": \"string\" },\n        \"request\": { \"type\": \"string\" },\n        \"acceptanceCriteria\": { \"type\": \"string\" }\n      },\n      \"required\": [\"title\", \"overview\", \"request\", \"acceptanceCriteria\"],\n      \"additionalProperties\": false\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        512,
+        -256
+      ],
+      "id": "d352be2e-e98c-49f4-a1fa-5c0c7f52cd6d",
+      "name": "Anthropic-API-HTTP-Request",
+      "credentials": {
+        "anthropicApi": {
+          "id": "7Ue80Lqh1dJMmgrM",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "2dd81139-a290-45eb-af5a-1b3c2eb3f78f",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        64
+      ],
+      "id": "547bccc6-bede-4ca8-88d3-e1a2e7a8b428",
+      "name": "issue-created-webhook",
+      "webhookId": "2dd81139-a290-45eb-af5a-1b3c2eb3f78f",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "15iqLsQWQGb36kwn",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ff376cf5-fbeb-4012-8d75-6920f8c36829",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        304
+      ],
+      "id": "fc765246-a1a0-4335-85c1-a1629bddca10",
+      "name": "issue-modified-webhook",
+      "webhookId": "ff376cf5-fbeb-4012-8d75-6920f8c36829",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "15iqLsQWQGb36kwn",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.issue_body }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a master ticket architect specializing in creating maximally clear and actionable tickets through a two-phase refinement process.\n\nYour output MUST always follow this structure:\n- title: A clear, concise title that captures the essence of the ticket\n- overview: A short and specific high-level summary providing context and background\n- request: The specific action or feature being requested, with technical details\n- acceptanceCriteria: Concrete, testable criteria that define when the ticket is complete\n\n=== TWO-PHASE WORKFLOW ===\n\nPHASE 1 - INITIAL DRAFT WITH QUESTIONS:\nWhen receiving raw, unstructured input (not containing \"ANSWER:\" or filled placeholders):\n1. Extract all available information from the input\n2. Fill in as much detail as possible in each section\n3. Identify missing critical information, ask firstly general information and later specific ones\n4. Embed specific questions using these formats:\n   - Inline: [QUESTION: specific question here, ANSWER: ]\n   - List format for multiple questions:\n     1. QUESTION: Question one? ANSWER:\n     2. QUESTION: Question two? ANSWER:\n5. put the questions in bold, so they are easily visible\n\n\nPHASE 2 - FINAL TICKET CREATION:\nWhen receiving the Phase 1 JSON output with answered questions (contains \"ANSWER:\" followed by text, or filled [PLACEHOLDER: ...] → answer):\n1. Parse the input JSON structure from Phase 1\n2. Extract all answers from \"ANSWER: text\" or \"[PLACEHOLDER: ...] → answer\" patterns\n3. Integrate answers seamlessly into the appropriate sections\n4. Create a final, polished ticket with NO questions, NO placeholders, NO \"ANSWER:\" markers\n5. Ensure all sections are complete, professional, and actionable\n6. Enhance the content where appropriate for clarity and completeness\n\nExample Phase 1 Output:\n{\n  \"title\": \"Implement User Authentication System\",\n  \"overview\": \"Add secure authentication to protect user data and enable personalized experiences. [PLACEHOLDER: What is the current authentication state? ANSWER: ]\",\n  \"request\": \"Build a complete authentication system with:\n1. What authentication method should be used (OAuth, JWT, session-based)? ANSWER:\n2. Should we support social login (Google, GitHub)? ANSWER:\n3. What password requirements are needed? ANSWER:\",\n  \"acceptanceCriteria\": \"1. Users can register and login successfully\\n2. Passwords are hashed and stored securely\\n3. [PLACEHOLDER: What session duration is required?]\\n4. [PLACEHOLDER: Are there specific security standards to meet?]\"\n}\n\nExample Phase 2 Input (Phase 1 output with filled answers):\n{\n  \"title\": \"Implement User Authentication System\",\n  \"overview\": \"Add secure authentication to protect user data and enable personalized experiences. [PLACEHOLDER: What is the current authentication state?] → Currently no authentication exists\",\n  \"request\": \"Build a complete authentication system with:\n1. What authentication method should be used (OAuth, JWT, session-based)? ANSWER: JWT\n2. Should we support social login (Google, GitHub)? ANSWER: Yes, Google and GitHub\n3. What password requirements are needed? ANSWER: Min 8 chars, uppercase, number, special char\",\n  \"acceptanceCriteria\": \"1. Users can register and login successfully\\n2. Passwords are hashed and stored securely\\n3. [PLACEHOLDER: What session duration is required?] → 24 hours\\n4. [PLACEHOLDER: Are there specific security standards to meet?] → OWASP Top 10\"\n}\n\nExample Phase 2 Output (final, clean version):\n{\n  \"title\": \"Implement JWT-Based User Authentication with Social Login\",\n  \"overview\": \"Add secure JWT-based authentication to protect user data and enable personalized experiences. Currently, the application has no authentication system in place.\",\n  \"request\": \"Build a complete JWT-based authentication system supporting both traditional email/password registration and social login via Google and GitHub. Password requirements: minimum 8 characters with at least one uppercase letter, one number, and one special character. Implement according to OWASP Top 10 security standards.\",\n  \"acceptanceCriteria\": \"1. Users can register and login with email/password successfully\\n2. Users can authenticate via Google and GitHub OAuth\\n3. Passwords meet requirements (8+ chars, uppercase, number, special char) and are hashed securely\\n4. JWT tokens expire after 24 hours\\n5. Implementation follows OWASP Top 10 security guidelines\\n6. All authentication endpoints are tested and documented\"\n}\n\nDetection logic: If input contains \"ANSWER:\" or \"→\" after placeholders, you're in Phase 2. Otherwise, Phase 1.\""
+        }
+      },
+      "id": "30443275-422d-48e5-800f-d2807a553f64",
+      "name": "specification-agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        752,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  issue_number: $input.first().json.number,\n  issue_title: $input.first().json.title,\n  issue_body: $input.first().json.body\n};"
+      },
+      "name": "Prepare Phase 1",
+      "id": "8ae05999-de80-4ef6-adce-726fed4269a4",
+      "typeVersion": 2,
+      "position": [
+        288,
+        80
+      ],
+      "type": "n8n-nodes-base.code"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  issue_number: $input.first().json.body.issue_number,\n  issue_title: $input.first().json.body.issue_title,\n  issue_body: $input.first().json.body.comment_body\n};"
+      },
+      "name": "Prepare Phase ",
+      "id": "62209c4b-8994-4ac4-ad5c-ceea34887bd2",
+      "typeVersion": 2,
+      "position": [
+        288,
+        304
+      ],
+      "type": "n8n-nodes-base.code"
+    },
+    {
+      "parameters": {},
+      "name": "Merge to Agent",
+      "id": "d2408617-2d79-4a10-9e00-efdef2c72f45",
+      "typeVersion": 3.2,
+      "position": [
+        512,
+        192
+      ],
+      "type": "n8n-nodes-base.merge"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "createComment",
+        "owner": {
+          "__rl": true,
+          "value": "albiosz",
+          "mode": "list",
+          "cachedResultName": "albiosz",
+          "cachedResultUrl": "https://github.com/albiosz"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "web-engineering-coding-playgrounds",
+          "mode": "list",
+          "cachedResultName": "web-engineering-coding-playgrounds",
+          "cachedResultUrl": "https://github.com/albiosz/web-engineering-coding-playgrounds"
+        },
+        "issueNumber": "={{ $('Merge to Agent').item.json.issue_number }}",
+        "body": "=# Title\n{{ $json.output.title }}\n\n# Overview\n{{ $json.output.overview }}\n\n# Request\n{{ $json.output.request }}\n\n# Acceptance Criteria\n{{ $json.output.acceptanceCriteria }}\n\nAI-GENERATED-TICKET"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1264,
+        288
+      ],
+      "id": "a26c88b1-b6e8-4c52-87be-ba261b331907",
+      "name": "Create a comment on an issue",
+      "webhookId": "efdbe7e3-3af4-481e-a6be-eb04105a5d7f",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "7kgBw3GCSDOWcZYr",
+          "name": "GitHub account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {
+          "headers": {
+            "host": "ai-engineering-workflow.app.n8n.cloud",
+            "user-agent": "curl/8.5.0",
+            "content-length": "111",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "authorization": "Basic YWktd29ya2Zsb3c6cmFNMidUXipNN3JGOUxu",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "172.208.152.212",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "US",
+            "cf-ray": "9bed9101f3fd6b1f-DFW",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "172.208.152.212, 172.68.26.7",
+            "x-forwarded-host": "ai-engineering-workflow.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-96-57f65f45bd-8jt4k",
+            "x-is-trusted": "yes",
+            "x-real-ip": "172.208.152.212"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "issue_id": 6,
+            "repository_name": "web-engineering-coding-playgrounds",
+            "repository_owner": "albiosz"
+          },
+          "webhookUrl": "https://ai-engineering-workflow.app.n8n.cloud/webhook-test/2dd81139-a290-45eb-af5a-1b3c2eb3f78f",
+          "executionMode": "test"
+        }
+      }
+    ],
+    "Anthropic-API-HTTP-Request": [
+      {
+        "json": {
+          "model": "claude-sonnet-4-5-20250929",
+          "id": "msg_01F1BAdXkqgzbhpuQPgYidFi",
+          "type": "message",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"title\":\"Rework Comment Section\",\"overview\":\"This ticket addresses the need to modernize the visual design and potentially the functionality of the comment section. The current implementation requires updates to meet modern UI/UX standards.\\n\\nKey Questions to Address:\\n- Which comment section specifically? (e.g., product comments, blog comments, forum threads, code review comments)\\n  ANSWER: [PLACEHOLDER]\\n- What pages or contexts does this affect?\\n  ANSWER: [PLACEHOLDER]\\n- Are there specific design references or examples of \\\"modern\\\" comment sections to follow?\\n  ANSWER: [PLACEHOLDER]\\n- Should this align with an existing design system or style guide?\\n  ANSWER: [PLACEHOLDER]\",\"request\":\"Update the comment section to achieve a more modern appearance.\\n\\nScope Clarifications Needed:\\n- Is this purely a visual/styling update, or does it include functional changes?\\n  ANSWER: [PLACEHOLDER]\\n- What specific elements need to be modernized? (e.g., typography, spacing, colors, layout, interactions, animations)\\n  ANSWER: [PLACEHOLDER]\\n- Should this include responsive design improvements for mobile/tablet?\\n  ANSWER: [PLACEHOLDER]\\n- Are there accessibility requirements to consider?\\n  ANSWER: [PLACEHOLDER]\\n- Does this affect both the comment display and the comment input/submission form?\\n  ANSWER: [PLACEHOLDER]\\n- Are nested/threaded comments in scope?\\n  ANSWER: [PLACEHOLDER]\",\"acceptanceCriteria\":\"The following must be clarified and met:\\n\\n1. Visual Design:\\n   - Comment section implements approved modern design\\n     - Design mockups/wireframes approved by: [PLACEHOLDER]\\n   - Styling is consistent with [PLACEHOLDER: design system/brand guidelines]\\n   - [PLACEHOLDER: Specific visual elements updated, e.g., borders, shadows, spacing, fonts]\\n\\n2. Functionality:\\n   - [PLACEHOLDER: List any functional requirements, e.g., \\\"All existing comment features remain functional\\\"]\\n   - [PLACEHOLDER: Any new interactions or behaviors]\\n\\n3. Responsive Behavior:\\n   - [PLACEHOLDER: Breakpoints and responsive requirements]\\n\\n4. Browser Compatibility:\\n   - Works in [PLACEHOLDER: specified browsers and versions]\\n\\n5. Accessibility:\\n   - [PLACEHOLDER: WCAG compliance level or specific accessibility requirements]\\n\\n6. Review & Approval:\\n   - Design review completed by: [PLACEHOLDER]\\n   - QA testing passed\\n   - Stakeholder approval obtained from: [PLACEHOLDER]\"}"
+            }
+          ],
+          "stop_reason": "end_turn",
+          "stop_sequence": null,
+          "usage": {
+            "input_tokens": 334,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 589,
+            "service_tier": "standard"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "GitHub": {
+      "main": [
+        [
+          {
+            "node": "Prepare Phase 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "specification-agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "specification-agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "specification-agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List files in GitHub": {
+      "ai_tool": [
+        [
+          {
+            "node": "specification-agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file in GitHub": {
+      "ai_tool": [
+        [
+          {
+            "node": "specification-agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Anthropic-API-HTTP-Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "issue-created-webhook": {
+      "main": [
+        [
+          {
+            "node": "GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "issue-modified-webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare Phase ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "specification-agent": {
+      "main": [
+        [
+          {
+            "node": "Create a comment on an issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Phase 1": {
+      "main": [
+        [
+          {
+            "node": "Merge to Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Phase ": {
+      "main": [
+        [
+          {
+            "node": "Merge to Agent",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge to Agent": {
+      "main": [
+        [
+          {
+            "node": "specification-agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "84812df3-b1bd-4424-8d8c-4a2d8af3c29d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d1fa8bea9cbb9d1e48d8709d2c751b0a583b28aa17382910916ea20874f862a5"
+  },
+  "id": "2PNHKLyu45eQpKuhlCJyE",
+  "tags": []
+}

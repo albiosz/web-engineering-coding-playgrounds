@@ -1,0 +1,89 @@
+{
+  "name": "Implementation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "8608ee83-82b8-4c9a-93de-e93523c908db",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1312,
+        432
+      ],
+      "id": "0bcbab5f-cf0a-48b6-be64-ac3c5d4bc801",
+      "name": "Implementation Webhook",
+      "webhookId": "8608ee83-82b8-4c9a-93de-e93523c908db",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "15iqLsQWQGb36kwn",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cursor.com/v0/agents",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "authorization",
+              "value": "Basic WU9VUl9BUElfS0VZOmtleV8yOTVlYTUxNDI0ODE1YTMyZmEyOGEyYjhmYzYyZTdkMzFkNjFmZmUzNDAyMjY5OTc3Y2E5MzJhZDJkZjA3ZWNl"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": {\n    \"text\": {{ JSON.stringify(\n      \"SYSTEM CONTEXT: You are a Senior Full-Stack Engineer. Your goal is to implement the requirements provided in the ticket below.\\n\\n\" +\n      \"MANDATORY RULES:\\n\" +\n      \"1. Always create unit tests that focus on checking if the acceptance criteria are met. Add comments to make it easier to assign acceptance criteria to a test.\\n\" +\n      \"2. Follow the existing testing patterns found in the repository.\\n\" +\n      \"3. Ensure the code is clean, documented, and follows the practices present in the code.\\n\\n\" +\n      \"TICKET CONTENT:\\n\" + $json.body.comment_body\n    ) }}\n  },\n  \"source\": {\n    \"repository\": \"https://github.com/albiosz/web-engineering-coding-playgrounds.git\",\n    \"ref\": \"main\"\n  },\n  \"target\": {\n    \"autoCreatePr\": true,\n    \"branchName\": \"feature/{{ $json.body.issue_number }}\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -848,
+        432
+      ],
+      "id": "80f26934-2d55-420a-afea-e529ff547b8b",
+      "name": "HTTP Cursor Agent",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "tFtVbHlN1MnBC5Vw",
+          "name": "Cursor_API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Implementation Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Cursor Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "b5b7fdb1-d423-43be-8f64-fa26dcf76e49",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d1fa8bea9cbb9d1e48d8709d2c751b0a583b28aa17382910916ea20874f862a5"
+  },
+  "id": "AJzgUvC5y1wZTm0wmms0J",
+  "tags": []
+}
